@@ -17,6 +17,9 @@ def get_movies():
     with open(movies_db_path, "r") as f:
         movies_title = json.load(f)
     
+    if movies_title == None:
+        return None
+    
     movies = [Movie(movie_title) for movie_title in movies_title]
     return movies
     
@@ -36,7 +39,10 @@ class Movie:
     
     def _get_movies(self):
         with open(movies_db_path, "r") as f:
-            return json.load(f)
+            list_movie = json.load(f)
+            if list_movie is None:
+                return []
+            return list_movie
     
     def _write_movies(self, movies):
         with open(movies_db_path, "w") as f:
@@ -48,7 +54,9 @@ class Movie:
                 logging.warning(f"{self.title} est déjà dans la liste")
                 return False
         
-        list_movies = self._get_movies().append((self.title))
+        list_movies = self._get_movies()
+        list_movies.append((self.title))
+        print(list_movies)
         self._write_movies(list_movies)
         return True
         
