@@ -12,7 +12,7 @@ A GUI built with PySide6 that allows you to add and remove (multiple at once) mo
 ---
 
 ### Run the Project
-1. `pip install requirement.txt`
+1. `pip install -r requirement.txt`
 2. `py app.py`
 
 OR
