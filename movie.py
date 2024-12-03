@@ -16,7 +16,7 @@ def get_movies():
     """
     with open(movies_db_path, "r") as f:
         movies_title = json.load(f)
-    
+        
     if movies_title == None:
         return None
     

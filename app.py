@@ -1,5 +1,11 @@
+from pathlib import Path
+import json
+
 from PySide6 import QtWidgets as QW, QtCore
+
 from movie import get_movies, Movie
+
+CUR_DIR = Path.cwd()
 
 class App(QW.QWidget):
     def __init__(self):
@@ -57,6 +63,15 @@ class App(QW.QWidget):
             movie.remove_from_movies()
             self.lw_liste_film.takeItem(self.lw_liste_film.row(selected_item))
 
+
+movie_db_path = CUR_DIR / "data" / "movies.json"
+if not movie_db_path.exists():
+    p = CUR_DIR / "data"
+    p.mkdir(exist_ok=True)
+    p = p / "movies.json"
+    p.touch()
+    with open(movie_db_path, "w") as f:
+        json.dump([], f)
 
 app = QW.QApplication([])
 window = App()
