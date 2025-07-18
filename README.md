@@ -7,6 +7,7 @@ Installer les dépendances
 
 aide pour le calendrier
 
-FullCalendar 
-React Big Calendar 
-TUI Calendar 
+FullCalendar
+React Big Calendar
+TUI Calendar
+React + javascript
