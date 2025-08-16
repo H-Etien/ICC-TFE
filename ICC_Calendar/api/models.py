@@ -2,6 +2,7 @@ from django.db import models
 import string
 import random
 
+# Fonction pour générer un code unique pour chaque salle
 def generate_unique_code():
     length = 8
     characters = string.ascii_uppercase + string.digits
