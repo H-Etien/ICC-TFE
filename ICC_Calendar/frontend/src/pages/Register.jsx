@@ -1,8 +1,10 @@
+import Form from "../components/Form";
+
 function Register() {
     return (
-        <div>
-            <h1>Welcome to the Register Page</h1>
-        </div>
+        <>
+            <Form route="/api/user/register/" method="register" />
+        </>
     );
 }
 

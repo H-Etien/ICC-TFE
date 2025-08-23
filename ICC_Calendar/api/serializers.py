@@ -2,10 +2,9 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from .model.models import Room 
-from .model.note_model import Note
+from .model.task_model import Task
 
-
-
+# Serializer pour convertir les objets Python en JSON
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
@@ -21,8 +20,8 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
-class NoteSerializer(serializers.ModelSerializer):
+class TaskSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Note
+        model = Task
         fields = ('id', 'author', 'title', 'content', 'created_at', 'updated_at')
         extra_kwargs = {'author': {'read_only': True}} 
