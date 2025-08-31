@@ -5,12 +5,15 @@ from rest_framework.permissions import IsAuthenticated
 from ..model.task_model import Task
 from ..serializers import TaskSerializer
 
+# Obtenir toutes les Tasks
 class TaskListCreate(generics.ListCreateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
 
+    # Obtenir les Tasks pour chaque User
     def get_queryset(self):
+        # self.request = la requête HTTP
         user = self.request.user
         return Task.objects.filter(author=user)
 

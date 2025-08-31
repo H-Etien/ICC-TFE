@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import api from "../api";
+import Task from "../components/Task";
 
 function Home() {
     const [tasks, setTasks] = useState([]);
@@ -48,10 +49,14 @@ function Home() {
             .catch((err) => alert(err));
     };
 
+    // Retourne toutes les tâches et le formulaire de création
     return (
         <>
             <div>
                 <h2>Tâche</h2>
+                {tasks.map((task) => (
+                    <Task key={task.id} task={task} onDelete={deleteTask} />
+                ))}
             </div>
             <form onSubmit={createTask}>
                 <input
