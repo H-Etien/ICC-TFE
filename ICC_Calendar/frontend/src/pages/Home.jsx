@@ -17,32 +17,20 @@ function Home() {
     }, []);
 
     const getTask = () => {
-        api.get("/api/task/")
-            .then((res) => res.data)
-            .then((data) => {
-                setTasks(data);
-                console.log(data);
-            })
+        api.get("/api/tasks/")
+            .then((res) => setTasks(res.data))
             .catch((err) => alert(err));
     };
 
     const deleteTask = (id) => {
-        api.delete(`/api/task/delete/${id}/`)
-            .then((res) => {
-                if (res.status === 204) {
-                    console.log("Task deleted successfully");
-                } else {
-                    alert("Failed to delete task");
-                }
-                getTask();
-            })
-            .catch((err) => alert(err));
+        api.delete(`/api/tasks/${id}/`)
+            .then(() => getTasks())
+            .catch((err) => console.error(err));
     };
-
     const getTags = () => {
         api.get("/api/tags/")
             .then((res) => setTags(res.data))
-            .catch((err) => console.error("Error fetching tags:", err));
+            .catch((err) => console.error(err));
     };
 
     const handleTagChange = (e) => {
@@ -56,42 +44,38 @@ function Home() {
 
     const createTask = (e) => {
         e.preventDefault();
-        api.post("/api/task/", { title, content, tags: selectedTags })
-            .then((res) => {
-                if (res.status === 201) {
-                    console.log("Task created successfully");
-                } else {
-                    alert("Failed to create task");
-                }
-                getTask();
+        api.post("/api/tasks/", { title, content, tag_ids: selectedTags })
+            .then(() => {
+                setTitle("");
+                setContent("");
+                setSelectedTags([]);
+                getTasks();
             })
-            .catch((err) => alert(err));
+            .catch((err) => console.error(err));
     };
 
     const createTag = (e) => {
         e.preventDefault();
         api.post("/api/tags/", { name: newTag })
-            .then((res) => {
-                if (res.status === 201) {
-                    console.log("Tag created successfully");
-                    getTags(); // Refresh the tag list
-                    setNewTag(""); // Clear the input
-                } else {
-                    alert("Failed to create tag");
-                }
+            .then(() => {
+                setNewTag("");
+                getTags();
             })
-            .catch((err) => alert(err));
+            .catch((err) => console.error(err));
     };
 
     // Retourne toutes les tâches et le formulaire de création
     return (
         <>
             <div>
-                <h2>Tâche</h2>
+                <h2>Tâches</h2>
                 {tasks.map((task) => (
                     <Task key={task.id} task={task} onDelete={deleteTask} />
                 ))}
             </div>
+
+            <hr />
+
             <form onSubmit={createTask}>
                 <input
                     type="text"
@@ -107,13 +91,13 @@ function Home() {
                 />
                 <br />
 
-                {/* Tag*/}
                 <div>
                     {tags.map((tag) => (
                         <label key={tag.id}>
                             <input
                                 type="checkbox"
                                 value={tag.id}
+                                checked={selectedTags.includes(tag.id)}
                                 onChange={handleTagChange}
                             />
                             {tag.name}
@@ -122,9 +106,7 @@ function Home() {
                 </div>
 
                 <br />
-                <button type="submit" value="Submit">
-                    Créer
-                </button>
+                <button type="submit">Créer</button>
             </form>
 
             <hr />
@@ -151,9 +133,7 @@ function Home() {
                         value={newTag}
                         onChange={(e) => setNewTag(e.target.value)}
                     />
-                    <button type="submit" value="Submit">
-                        Créer
-                    </button>
+                    <button type="submit">Créer</button>
                 </div>
             </form>
         </>

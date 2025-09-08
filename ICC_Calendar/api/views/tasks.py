@@ -13,19 +13,17 @@ class TaskListCreate(generics.ListCreateAPIView):
 
     # Obtenir les Tasks pour chaque User
     def get_queryset(self):
-        return Task.objects.filter(author=self.request.user)
+        return Task.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        if serializer.is_valid():
-            serializer.save(author=self.request.user)
-        else:
-            print(serializer.errors)
+        serializer.save(user=self.request.user)
 
-class TaskDelete(generics.DestroyAPIView):
+
+# Supprimer, modifier une Task
+class TaskUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # L'utilisateur ne peut supprimer que ses propres tâches
-        return Task.objects.filter(author=self.request.user)
+        return Task.objects.filter(user=self.request.user)
 

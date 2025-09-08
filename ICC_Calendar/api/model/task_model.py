@@ -13,7 +13,7 @@ def get_default_end_time():
     return now.replace(hour=23, minute=59, second=59, microsecond=0)
 
 class Task(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='task')
+    user  = models.ForeignKey(User, on_delete=models.CASCADE, related_name='task')
     title = models.CharField(max_length=100)
     content = models.TextField()
     

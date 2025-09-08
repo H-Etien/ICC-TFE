@@ -2,8 +2,9 @@ from django.contrib import admin
 from django.urls import path, include
 
 
-from .views import RoomView, CreateUserView, TaskListCreate, TaskDelete, TagListCreate, TagDelete
+from .views import RoomView, CreateUserView, TaskListCreate, TaskUpdateDelete, TagListCreate, TagUpdateDelete
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 
 urlpatterns = [
     path('', RoomView.as_view()),
@@ -12,9 +13,11 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name="token-refresh"),
     path("api-auth/", include("rest_framework.urls")),
 
-    path('task/', TaskListCreate.as_view(), name="task-list-create"),
-    path('task/delete/<int:pk>/', TaskDelete.as_view(), name="task-delete"),
+    # Tasks
+    path('tasks/', TaskListCreate.as_view(), name="task-list-create"),
+    path('tasks/<int:pk>/', TaskUpdateDelete.as_view(), name="task-update-delete"),
 
+    # Tags
     path('tags/', TagListCreate.as_view(), name="tag-list-create"),
-    path('tags/<int:pk>/', TagDelete.as_view(), name="tag-delete"),
+    path('tags/<int:pk>/', TagUpdateDelete.as_view(), name="tag-update-delete"),
 ]

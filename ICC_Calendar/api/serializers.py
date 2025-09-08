@@ -24,12 +24,13 @@ class UserSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ["id", "name"]
-
-    def create(self, validated_data):
-        user = self.context["request"].user
-        return Tag.objects.create(user=user, **validated_data)
-
+        fields = ['id', 'name']
+        extra_kwargs = {'user': {'read_only': True}}
+# 
+#     def create(self, validated_data):
+#         user = self.context["request"].user
+#         return Tag.objects.create(user=user, **validated_data)
+# 
  
 class TaskSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)  
@@ -42,8 +43,8 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ( "id", "author", "title", "content", "created_at", "updated_at", "start_time", "end_time", "tags", "tag_ids")
-        extra_kwargs = {"author": {"read_only": True}}
+        fields = ( "id", "user", "title", "content", "created_at", "updated_at", "start_time", "end_time", "tags", "tag_ids")
+        extra_kwargs = {"user": {"read_only": True}}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

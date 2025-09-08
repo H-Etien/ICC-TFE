@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
@@ -16,16 +15,13 @@ class TagListCreate(generics.ListCreateAPIView):
         return Tag.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        if serializer.is_valid():
-            # Lie automatiquement le tag à l'utilisateur
-            serializer.save(user=self.request.user)
-        else:
-            print(serializer.errors)
+        # Lie automatiquement le tag à l'utilisateur
+        serializer.save(user=self.request.user)
 
-class TagDelete(generics.DestroyAPIView):
+class TagUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TagSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # L'utilisateur ne peut supprimer que ses tags
+        # L'utilisateur ne peut supprimer ou modifier que ses tags
         return Tag.objects.filter(user=self.request.user)
