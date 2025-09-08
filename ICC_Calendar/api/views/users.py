@@ -23,4 +23,3 @@ def main(request):
     Renders the main page of the calendar.
     """
     return HttpResponse("Welcome to the ICC Calendar")
-    return render(request, 'main.html')

@@ -10,6 +10,16 @@ function Task({ task, onDelete }) {
             <h3 className="task-title">{task.title}</h3>
             <p className="task-content">{task.content}</p>
             <p className="task-date">{formattedDate}</p>
+
+            <div className="task-tags">
+                Tags :
+                {task.tags.map((tag) => (
+                    <span key={tag.id} className="task-tag">
+                        {tag.name}
+                    </span>
+                ))}
+            </div>
+
             <button className="task-delete" onClick={() => onDelete(task.id)}>
                 Supprimer
             </button>

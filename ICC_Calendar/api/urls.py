@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 
-from .views import RoomView, CreateUserView, TaskListCreate, TaskDelete
+from .views import RoomView, CreateUserView, TaskListCreate, TaskDelete, TagListCreate, TagDelete
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
@@ -14,4 +14,7 @@ urlpatterns = [
 
     path('task/', TaskListCreate.as_view(), name="task-list-create"),
     path('task/delete/<int:pk>/', TaskDelete.as_view(), name="task-delete"),
+
+    path('tags/', TagListCreate.as_view(), name="tag-list-create"),
+    path('tags/<int:pk>/', TagDelete.as_view(), name="tag-delete"),
 ]

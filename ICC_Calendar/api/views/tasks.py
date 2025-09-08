@@ -3,19 +3,17 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
 from ..model.task_model import Task
-from ..serializers import TaskSerializer
+from ..model.tag_model import Tag
+from ..serializers import TaskSerializer, TagSerializer
 
 # Obtenir toutes les Tasks
 class TaskListCreate(generics.ListCreateAPIView):
-    queryset = Task.objects.all()
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
 
     # Obtenir les Tasks pour chaque User
     def get_queryset(self):
-        # self.request = la requête HTTP
-        user = self.request.user
-        return Task.objects.filter(author=user)
+        return Task.objects.filter(author=self.request.user)
 
     def perform_create(self, serializer):
         if serializer.is_valid():
@@ -24,10 +22,10 @@ class TaskListCreate(generics.ListCreateAPIView):
             print(serializer.errors)
 
 class TaskDelete(generics.DestroyAPIView):
-    queryset = Task.objects.all()
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
-        return Task.objects.filter(author=user)
+        # L'utilisateur ne peut supprimer que ses propres tâches
+        return Task.objects.filter(author=self.request.user)
+
