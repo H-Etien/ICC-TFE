@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 import api from "../api";
 import Task from "../components/Task";
+import Sidebar from "../components/Sidebar";
 
 function Home() {
     const [tasks, setTasks] = useState([]);
@@ -12,11 +13,11 @@ function Home() {
     const [selectedTags, setSelectedTags] = useState([]);
 
     useEffect(() => {
-        getTask();
+        getTasks();
         getTags();
     }, []);
 
-    const getTask = () => {
+    const getTasks = () => {
         api.get("/api/tasks/")
             .then((res) => setTasks(res.data))
             .catch((err) => alert(err));
@@ -64,9 +65,24 @@ function Home() {
             .catch((err) => console.error(err));
     };
 
+    const deleteTag = (id) => {
+        if (!confirm("Supprimer cette étiquette ?")) return;
+        api.delete(`/api/tags/${id}/`)
+            .then(() => {
+                // rafraîchir la liste des tags et, si besoin, les tasks
+                getTags();
+                getTasks();
+            })
+            .catch((err) => {
+                console.error("Erreur suppression tag :", err);
+                alert("Impossible de supprimer l'étiquette");
+            });
+    };
+
     // Retourne toutes les tâches et le formulaire de création
     return (
         <>
+            <Sidebar />
             <div>
                 <h2>Tâches</h2>
                 {tasks.map((task) => (
@@ -101,6 +117,12 @@ function Home() {
                                 onChange={handleTagChange}
                             />
                             {tag.name}
+                            <button
+                                type="button"
+                                onClick={() => deleteTag(tag.id)}
+                            >
+                                Supprimer
+                            </button>
                         </label>
                     ))}
                 </div>
