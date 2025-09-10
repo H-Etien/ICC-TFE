@@ -14,6 +14,7 @@ function ProtectedRoute({ children }) {
         auth().catch(() => setIsAuthorized(false));
     }, []);
 
+    // Fonction pour rafraîchir le token JWT
     const refreshToken = async () => {
         const refreshToken = localStorage.getItem(REFRESH_TOKEN);
 

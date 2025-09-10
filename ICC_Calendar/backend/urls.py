@@ -4,6 +4,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),  # Include the URLs from the api app
-    path('', include('frontend.urls')),  # Include the URLs from the frontend app
+    path('api/', include('api.urls')),  # URL du dossier api
+    
 ]
