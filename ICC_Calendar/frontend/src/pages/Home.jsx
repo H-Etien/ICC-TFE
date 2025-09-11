@@ -18,9 +18,7 @@ function Home() {
     }, []);
 
     const getTasks = () => {
-        api.get("/api/tasks/")
-            .then((res) => setTasks(res.data))
-            .catch((err) => alert(err));
+        api.get("/api/tasks/").then((res) => setTasks(res.data));
     };
 
     const deleteTask = (id) => {
@@ -66,23 +64,22 @@ function Home() {
     };
 
     const deleteTag = (id) => {
-        if (!confirm("Supprimer cette étiquette ?")) return;
         api.delete(`/api/tags/${id}/`)
             .then(() => {
-                // rafraîchir la liste des tags et, si besoin, les tasks
+                // rafraîchir la liste des tags et des tâches
                 getTags();
                 getTasks();
             })
             .catch((err) => {
                 console.error("Erreur suppression tag :", err);
-                alert("Impossible de supprimer l'étiquette");
             });
     };
 
     // Retourne toutes les tâches et le formulaire de création
     return (
+        // onTagsUpdated est une fonction pour rafraîchir la liste des tags dans Home
         <>
-            <Sidebar />
+            <Sidebar onTagsUpdated={getTags} />
             <div>
                 <h2>Tâches</h2>
                 {tasks.map((task) => (
@@ -131,7 +128,8 @@ function Home() {
                 <button type="submit">Créer</button>
             </form>
 
-            <hr />
+            {/* 
+            // Création de tags, déjà dans Sidebar.jsx 
 
             <form onSubmit={createTag}>
                 <div>
@@ -158,6 +156,7 @@ function Home() {
                     <button type="submit">Créer</button>
                 </div>
             </form>
+            */}
         </>
     );
 }
