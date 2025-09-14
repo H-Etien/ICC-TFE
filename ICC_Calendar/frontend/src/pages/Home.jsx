@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 
 import api from "../api";
 import Task from "../components/Task";
+import Tag from "../components/Tag";
 import Sidebar from "../components/Sidebar";
+import Calendar from "../components/Calendar";
+
+import "../styles/Home.css";
 
 function Home() {
     const [tasks, setTasks] = useState([]);
@@ -53,6 +57,31 @@ function Home() {
             .catch((err) => console.error(err));
     };
 
+    const addTagToTask = (taskId, tagId) => {
+        const task = tasks.find((t) => t.id === taskId);
+        const currentIds = task.tags.map((t) => t.id);
+
+        if (currentIds.includes(tagId)) return;
+
+        const newTagIds = [...currentIds, tagId];
+
+        api.patch(`/api/tasks/${taskId}/`, { tag_ids: newTagIds })
+            .then(() => getTasks())
+            .catch((err) => console.error("addTagToTask error:", err));
+    };
+
+    // Retirer un tag d'une tâche
+    const unlinkTagFromTask = (taskId, tagId) => {
+        const task = tasks.find((t) => t.id === taskId);
+        const currentIds = task.tags.map((t) => t.id);
+
+        const newIds = currentIds.filter((id) => id !== tagId);
+
+        api.patch(`/api/tasks/${taskId}/`, { tag_ids: newIds })
+            .then(() => getTasks())
+            .catch((err) => console.error("unlinkTagFromTask error:", err));
+    };
+
     const createTag = (e) => {
         e.preventDefault();
         api.post("/api/tags/", { name: newTag })
@@ -78,12 +107,21 @@ function Home() {
     // Retourne toutes les tâches et le formulaire de création
     return (
         // onTagsUpdated est une fonction pour rafraîchir la liste des tags dans Home
-        <>
+        <div className="home-container">
             <Sidebar onTagsUpdated={getTags} />
+
+            <hr />
             <div>
                 <h2>Tâches</h2>
                 {tasks.map((task) => (
-                    <Task key={task.id} task={task} onDelete={deleteTask} />
+                    <Task
+                        key={task.id}
+                        task={task}
+                        onDelete={deleteTask}
+                        onAddTag={addTagToTask}
+                        onRemoveTag={unlinkTagFromTask}
+                        availableTags={tags}
+                    />
                 ))}
             </div>
 
@@ -114,12 +152,6 @@ function Home() {
                                 onChange={handleTagChange}
                             />
                             {tag.name}
-                            <button
-                                type="button"
-                                onClick={() => deleteTag(tag.id)}
-                            >
-                                Supprimer
-                            </button>
                         </label>
                     ))}
                 </div>
@@ -157,7 +189,7 @@ function Home() {
                 </div>
             </form>
             */}
-        </>
+        </div>
     );
 }
 

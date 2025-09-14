@@ -3,10 +3,16 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 
+import MenuIcon from "@mui/icons-material/Menu";
+import ChecklistIcon from "@mui/icons-material/Checklist";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import ManageSearchIcon from "@mui/icons-material/ManageSearch";
+
 import api from "../api";
 import Tag from "./Tag";
+import Calendar from "./Calendar";
 
-//import "./Sidebar.css";
+import "../styles/Sidebar.css";
 
 function Sidebar({ onTagsUpdated }) {
     const [tags, setTags] = useState([]);
@@ -61,27 +67,25 @@ function Sidebar({ onTagsUpdated }) {
     };
 
     return (
-        <>
+        <div className="sidebar">
             <div className="top">
                 <ul>
                     <li>
+                        <MenuIcon />
                         <Link to="/">Accueil</Link>
                     </li>
                     <li>
-                        <Link to="/login">Connexion</Link>
+                        <CalendarMonthIcon />
+                        <Link to="/calendar">Calendrier</Link>
                     </li>
                     <li>
+                        <ChecklistIcon />
                         <Link to="/tasks">Tâches</Link>
                     </li>
                     <li>
                         <Link to="/tags">Étiquettes</Link>
                     </li>
-                    <li>
-                        <Link to="/about">À propos</Link>
-                    </li>
-                    <li>
-                        <Link to="/contact">Contact</Link>
-                    </li>
+
                     <li>
                         <button type="button" onClick={handleLogout}>
                             Déconnexion
@@ -92,6 +96,7 @@ function Sidebar({ onTagsUpdated }) {
 
             <div className="search">
                 <input type="text" placeholder="Rechercher..." />
+                <ManageSearchIcon />
             </div>
 
             <div className="center">
@@ -116,7 +121,12 @@ function Sidebar({ onTagsUpdated }) {
             <div className="tags-container"></div>
             <div className="tags">
                 {tags.map((tag) => (
-                    <Tag key={tag.id} tag={tag} onDelete={deleteTag} />
+                    <Tag
+                        key={tag.id}
+                        tag={tag}
+                        onDelete={deleteTag}
+                        needsDeleteButton={true}
+                    />
                 ))}
             </div>
             <div className="tags">
@@ -132,7 +142,7 @@ function Sidebar({ onTagsUpdated }) {
                     </form>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 
