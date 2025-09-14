@@ -12,6 +12,10 @@ function Home() {
     const [tasks, setTasks] = useState([]);
     const [content, setContent] = useState("");
     const [title, setTitle] = useState("");
+
+    const [startTime, setStartTime] = useState("");
+    const [endTime, setEndTime] = useState("");
+
     const [tags, setTags] = useState([]);
     const [newTag, setNewTag] = useState("");
     const [selectedTags, setSelectedTags] = useState([]);
@@ -47,10 +51,24 @@ function Home() {
 
     const createTask = (e) => {
         e.preventDefault();
-        api.post("/api/tasks/", { title, content, tag_ids: selectedTags })
+
+        // Tous les objets de la tâche
+        const newTask = {
+            title,
+            content,
+
+            tag_ids: selectedTags,
+        };
+        if (startTime) newTask.start_time = new Date(startTime).toISOString();
+        if (endTime) newTask.end_time = new Date(endTime).toISOString();
+
+        //api.post("/api/tasks/", { title, content, tag_ids: selectedTags })
+        api.post("/api/tasks/", newTask)
             .then(() => {
                 setTitle("");
                 setContent("");
+                setStartTime("");
+                setEndTime("");
                 setSelectedTags([]);
                 getTasks();
             })
@@ -92,15 +110,12 @@ function Home() {
             .catch((err) => console.error(err));
     };
 
-    const deleteTag = (id) => {
-        api.delete(`/api/tags/${id}/`)
-            .then(() => {
-                // rafraîchir la liste des tags et des tâches
-                getTags();
-                getTasks();
-            })
+    const updateTask = (taskId, taskContent) => {
+        // convertit les datetime-local (si fournis sous forme locale) en ISO YYYY-MM-DDTHH:MM
+        api.patch(`/api/tasks/${taskId}/`, taskContent)
+            .then(() => getTasks())
             .catch((err) => {
-                console.error("Erreur suppression tag :", err);
+                console.error("erreur updateTask: ", err);
             });
     };
 
@@ -121,6 +136,7 @@ function Home() {
                         onAddTag={addTagToTask}
                         onRemoveTag={unlinkTagFromTask}
                         availableTags={tags}
+                        onUpdateTask={updateTask}
                     />
                 ))}
             </div>
@@ -134,13 +150,33 @@ function Home() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
-                <br />
+                <hr />
                 <textarea
                     placeholder="Contenu"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                 />
-                <br />
+                <hr />
+
+                <div className="tache-debut">
+                    Début
+                    <input
+                        type="datetime-local"
+                        value={startTime}
+                        onChange={(e) => setStartTime(e.target.value)}
+                    />
+                </div>
+                <hr />
+                <div className="tache-fin">
+                    Fin
+                    <input
+                        type="datetime-local"
+                        value={endTime}
+                        onChange={(e) => setEndTime(e.target.value)}
+                    />
+                </div>
+
+                <hr />
 
                 <div>
                     {tags.map((tag) => (

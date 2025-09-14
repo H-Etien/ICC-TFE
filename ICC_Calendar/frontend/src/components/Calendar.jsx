@@ -1,7 +1,11 @@
 import React from "react";
 import Sidebar from "./Sidebar";
+
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import listPlugin from "@fullcalendar/list";
+
 import frLocale from "@fullcalendar/core/locales/fr";
 
 import "../styles/Calendar.css";
@@ -19,7 +23,7 @@ const Calendar = () => {
                 <div className="middle">
                     <FullCalendar
                         className="calendar-full"
-                        plugins={[dayGridPlugin]}
+                        plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
                         initialView="dayGridMonth"
                         locales={[frLocale]}
                         locale="fr"
@@ -37,6 +41,11 @@ const Calendar = () => {
                                 allDay: true,
                             },
                         ]}
+                        headerToolbar={{
+                            left: "prev,next today",
+                            center: "title",
+                            right: "dayGridYear,dayGridMonth,timeGridWeek,timeGridDay",
+                        }}
                     />
                 </div>
             </div>

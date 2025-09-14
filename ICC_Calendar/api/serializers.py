@@ -51,3 +51,10 @@ class TaskSerializer(serializers.ModelSerializer):
         # Filtrer les tags disponibles par utilisateur
         user = self.context["request"].user
         self.fields["tag_ids"].queryset = Tag.objects.filter(user=user)
+
+    def create(self, validated_data):
+        tags = validated_data.pop("tags", [])
+        task = Task.objects.create(**validated_data)
+        if tags:
+            task.tags.set(tags)
+        return task

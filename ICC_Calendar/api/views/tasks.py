@@ -26,4 +26,4 @@ class TaskUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Task.objects.filter(user=self.request.user)
-
+    
