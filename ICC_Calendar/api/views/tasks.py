@@ -27,3 +27,9 @@ class TaskUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return Task.objects.filter(user=self.request.user)
     
+    # Pour debug avec les données reçues
+    def perform_update(self, serializer):
+        data = getattr(self.request, "data", None)
+        print('\n', "perform_update request.data:", data, '\n')
+        serializer.save()
+        

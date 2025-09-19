@@ -43,7 +43,7 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ( "id", "user", "title", "content", "created_at", "updated_at", "start_time", "end_time", "tags", "tag_ids")
+        fields = ( "id", "user", "title", "content", "created_at", "updated_at", "start_time", "end_time", "tags", "tag_ids", "is_completed", "completed_date")
         extra_kwargs = {"user": {"read_only": True}}
 
     def __init__(self, *args, **kwargs):

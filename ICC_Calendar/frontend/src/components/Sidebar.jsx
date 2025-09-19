@@ -36,7 +36,7 @@ function Sidebar({ onTagsUpdated }) {
                 getTags();
 
                 // onTagsUpdated est une fonction pour rafraîchir la liste des tags dans Home
-                if (typeof onTagsUpdated === "function") onTagsUpdated();
+                onTagsUpdated();
             })
             .catch((err) => console.error(err));
     };
@@ -48,7 +48,7 @@ function Sidebar({ onTagsUpdated }) {
             .then(() => {
                 // rafraîchir la liste des tags
                 getTags();
-                if (typeof onTagsUpdated === "function") onTagsUpdated();
+                onTagsUpdated();
             })
             .catch((err) => console.error("deleteTag error:", err));
     };

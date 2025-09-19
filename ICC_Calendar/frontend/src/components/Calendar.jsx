@@ -10,7 +10,7 @@ import frLocale from "@fullcalendar/core/locales/fr";
 
 import "../styles/Calendar.css";
 
-const Calendar = () => {
+function Calendar() {
     return (
         <div className="calendar-container">
             <Sidebar />
@@ -51,5 +51,5 @@ const Calendar = () => {
             </div>
         </div>
     );
-};
+}
 export default Calendar;
