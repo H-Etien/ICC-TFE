@@ -5,6 +5,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
+import multiMonthPlugin from "@fullcalendar/multimonth";
 
 import frLocale from "@fullcalendar/core/locales/fr";
 
@@ -23,11 +24,43 @@ function Calendar() {
                 <div className="middle">
                     <FullCalendar
                         className="calendar-full"
-                        plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
-                        initialView="dayGridMonth"
+                        plugins={[
+                            dayGridPlugin,
+                            timeGridPlugin,
+                            listPlugin,
+                            multiMonthPlugin,
+                        ]}
+                        //initialView="dayGridMonth"
+
+                        //largeur minimale en px pour afficher la vue multiMonth
+                        multiMonthMinWidth={400}
+                        views={
+                            ({
+                                multiMonthYear: {
+                                    type: "multiMonth",
+                                    duration: { months: 12 },
+                                    buttonText: "Année",
+                                },
+                            },
+                            {
+                                listDay: { buttonText: "Liste jour" },
+                            })
+                        }
+                        initialView="multiMonthYear"
                         locales={[frLocale]}
                         locale="fr"
                         height="80vh"
+                        // nommer les boutons en français
+                        // buttonText={{
+                        //     dayGridYear: "Année",
+                        //     multiMonthYear: "Année",
+                        //     dayGridMonth: "Mois",
+                        //     timeGridWeek: "Semaine",
+                        //     timeGridDay: "Jour",
+                        //     listDay: "Liste jour",
+                        //     listWeek: "Liste semaine",
+                        //     today: "Aujourd'hui",
+                        // }}
                         events={[
                             { title: "Événement 1", start: "2025-09-01" },
                             {
@@ -44,7 +77,7 @@ function Calendar() {
                         headerToolbar={{
                             left: "prev,next today",
                             center: "title",
-                            right: "dayGridYear,dayGridMonth,timeGridWeek,timeGridDay",
+                            right: "dayGridYear,dayGridMonth,timeGridWeek,timeGridDay,multiMonthYear,listDay,listWeek",
                         }}
                     />
                 </div>

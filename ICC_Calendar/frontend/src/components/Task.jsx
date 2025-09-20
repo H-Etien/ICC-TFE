@@ -11,6 +11,12 @@ function Task({
     onAddTag,
     onRemoveTag,
     onUpdateTask,
+    onUpdateTimeSpent,
+    isTimeRunning = false,
+    elapsed = 0,
+    onToggleTimer,
+
+    isDisabled = false,
 }) {
     // afficher la date sans les millisecondes
     const formattedDate = new Date(task.created_at).toLocaleString("fr-FR");
@@ -19,11 +25,9 @@ function Task({
     const filteredTags = availableTags.filter(
         (tag) => !task.tags.find((tagInTask) => tagInTask.id === tag.id)
     );
-
     const [newTagId, setNewTagId] = useState(
         filteredTags[0] ? String(filteredTags[0].id) : ""
     );
-
     const [editStart, setEditStart] = useState(
         //toDatetimeLocal(task.start_time)
         toDatetimeLocal(task.start_time)
@@ -45,6 +49,13 @@ function Task({
             setEditEnd(toDatetimeLocal(task.end_time));
         }
     }, [filteredTags, task.start_time, task.end_time]);
+
+    const formatDuration = (seconds) => {
+        const h = String(Math.floor(seconds / 3600)).padStart(2, "0");
+        const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
+        const s = String(seconds % 60).padStart(2, "0");
+        return `${h}:${m}:${s}`;
+    };
 
     // Convertir en ISO UTC pour l'API
     function fromDatetimeLocal(localStr) {
@@ -76,6 +87,14 @@ function Task({
         setIsDateEdited(false);
     };
 
+    const handleStartStop = () => {
+        if (!isTimeRunning) {
+            onToggleTimer(task.id); // start via Home.startTimer
+        } else {
+            onToggleTimer(null); // stop via Home.stopTimer
+        }
+    };
+
     return (
         <>
             {task.is_completed && (
@@ -85,6 +104,16 @@ function Task({
                 <h3 className="task-title">{task.title}</h3>
                 <p className="task-content">{task.content}</p>
                 <p className="task-date">{formattedDate}</p>
+
+                <button onClick={handleStartStop} disabled={isDisabled}>
+                    {isTimeRunning ? "Stop" : "Commencer"}
+                </button>
+
+                {isTimeRunning && (
+                    <p style={{ color: "green" }}>
+                        En cours: {formatDuration(elapsed)}
+                    </p>
+                )}
 
                 <div className="task-dates">
                     <div>

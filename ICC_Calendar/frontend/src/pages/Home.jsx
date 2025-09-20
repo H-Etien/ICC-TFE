@@ -31,10 +31,59 @@ function Home() {
         return !task.is_completed;
     });
 
+    // ID de la tâche en cours de minuterie pour avoir un seul minuteur à la fois
+    const [activeTimerTaskId, setActiveTimerTaskId] = useState(null);
+    const [activeStartTime, setActiveStartTime] = useState(null);
+    const [timerElapsed, setTimerElapsed] = useState(0);
+
     useEffect(() => {
         getTasks();
         getTags();
     }, []);
+
+    useEffect(() => {
+        let interval;
+        if (activeTimerTaskId) {
+            interval = setInterval(() => {
+                if (activeStartTime) {
+                    const elapsed = Math.floor(
+                        (Date.now() - new Date(activeStartTime).getTime()) /
+                            1000
+                    );
+                    setTimerElapsed(elapsed);
+                }
+            }, 1000);
+        } else {
+            setTimerElapsed(0);
+        }
+        return () => clearInterval(interval);
+    }, [activeTimerTaskId, activeStartTime]);
+
+    const onToggleTimer = (taskId) => {
+        if (taskId && activeTimerTaskId !== taskId) startTimer(taskId);
+        else stopTimer(activeTimerTaskId);
+    };
+
+    const disabledTimer = (taskId) =>
+        activeTimerTaskId !== null && activeTimerTaskId !== taskId;
+
+    const stopTimer = async (taskId) => {
+        const seconds = timerElapsed;
+        if (taskId) {
+            api.patch(`/api/tasks/${taskId}/`, { time_spent: seconds })
+                .then(() => getTasks())
+                .catch((err) => console.error(err));
+        }
+        setActiveTimerTaskId(null);
+        setActiveStartTime(null);
+        setTimerElapsed(0);
+    };
+
+    const startTimer = (taskId) => {
+        setActiveTimerTaskId(taskId);
+        setActiveStartTime(new Date().toISOString());
+        setTimerElapsed(0);
+    };
 
     const getTasks = () => {
         api.get("/api/tasks/").then((res) => {
@@ -61,6 +110,12 @@ function Home() {
         } else {
             setSelectedTags(selectedTags.filter((id) => id !== tagId));
         }
+    };
+
+    const updateTaskTime = (id, seconds) => {
+        api.patch(`/api/tasks/${id}/`, { time_spent: seconds })
+            .then(() => getTasks())
+            .catch((err) => console.error(err));
     };
 
     const createTask = (e) => {
@@ -172,6 +227,13 @@ function Home() {
                             onRemoveTag={unlinkTagFromTask}
                             availableTags={tags}
                             onUpdateTask={updateTask}
+                            onUpdateTimeSpent={updateTaskTime}
+                            isTimeRunning={activeTimerTaskId === task.id}
+                            elapsed={
+                                activeTimerTaskId === task.id ? timerElapsed : 0
+                            }
+                            isDisabled={disabledTimer(task.id)}
+                            onToggleTimer={() => onToggleTimer(task.id)}
                         />
                     ))}
                 </div>

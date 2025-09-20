@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
 import Calendar from "./components/Calendar";
+import AllTasks from "./pages/AllTasks";
 
 function Logout() {
     localStorage.clear();
@@ -43,7 +44,7 @@ function App() {
                     path="/tasks"
                     element={
                         <ProtectedRoute>
-                            <Home />
+                            <AllTasks />
                         </ProtectedRoute>
                     }
                 />
