@@ -7,6 +7,7 @@ import Sidebar from "../components/Sidebar";
 import Calendar from "../components/Calendar";
 import CreateTask from "../components/CreateTask";
 
+import useTimer from "../hooks/useTimer";
 import "../styles/Home.css";
 
 function Home() {
@@ -31,59 +32,24 @@ function Home() {
         return !task.is_completed;
     });
 
-    // ID de la tâche en cours de minuterie pour avoir un seul minuteur à la fois
-    const [activeTimerTaskId, setActiveTimerTaskId] = useState(null);
-    const [activeStartTime, setActiveStartTime] = useState(null);
-    const [timerElapsed, setTimerElapsed] = useState(0);
-
     useEffect(() => {
         getTasks();
         getTags();
     }, []);
 
-    useEffect(() => {
-        let interval;
-        if (activeTimerTaskId) {
-            interval = setInterval(() => {
-                if (activeStartTime) {
-                    const elapsed = Math.floor(
-                        (Date.now() - new Date(activeStartTime).getTime()) /
-                            1000
-                    );
-                    setTimerElapsed(elapsed);
-                }
-            }, 1000);
-        } else {
-            setTimerElapsed(0);
+    const updateTaskTime = async (taskId, seconds) => {
+        try {
+            await api.patch(`/api/tasks/${taskId}/`, { time_spent: seconds });
+            // rafraîchir les tâches après la persistance
+            getTasks();
+        } catch (err) {
+            console.error("updateTaskTime error:", err);
         }
-        return () => clearInterval(interval);
-    }, [activeTimerTaskId, activeStartTime]);
-
-    const onToggleTimer = (taskId) => {
-        if (taskId && activeTimerTaskId !== taskId) startTimer(taskId);
-        else stopTimer(activeTimerTaskId);
     };
 
-    const disabledTimer = (taskId) =>
-        activeTimerTaskId !== null && activeTimerTaskId !== taskId;
-
-    const stopTimer = async (taskId) => {
-        const seconds = timerElapsed;
-        if (taskId) {
-            api.patch(`/api/tasks/${taskId}/`, { time_spent: seconds })
-                .then(() => getTasks())
-                .catch((err) => console.error(err));
-        }
-        setActiveTimerTaskId(null);
-        setActiveStartTime(null);
-        setTimerElapsed(0);
-    };
-
-    const startTimer = (taskId) => {
-        setActiveTimerTaskId(taskId);
-        setActiveStartTime(new Date().toISOString());
-        setTimerElapsed(0);
-    };
+    // useTimer centralise l'interval et le calcul d'elapsed
+    const { activeTimerTaskId, timerElapsed, onToggleTimer, isTimerDisabled } =
+        useTimer(updateTaskTime);
 
     const getTasks = () => {
         api.get("/api/tasks/").then((res) => {
@@ -110,12 +76,6 @@ function Home() {
         } else {
             setSelectedTags(selectedTags.filter((id) => id !== tagId));
         }
-    };
-
-    const updateTaskTime = (id, seconds) => {
-        api.patch(`/api/tasks/${id}/`, { time_spent: seconds })
-            .then(() => getTasks())
-            .catch((err) => console.error(err));
     };
 
     const createTask = (e) => {
@@ -160,11 +120,11 @@ function Home() {
     // Retirer un tag d'une tâche
     const unlinkTagFromTask = (taskId, tagId) => {
         const task = tasks.find((t) => t.id === taskId);
-        const currentIds = task.tags.map((t) => t.id);
+        const currentTagIds = task.tags.map((t) => t.id);
 
-        const newIds = currentIds.filter((id) => id !== tagId);
+        const newTagIds = currentTagIds.filter((id) => id !== tagId);
 
-        api.patch(`/api/tasks/${taskId}/`, { tag_ids: newIds })
+        api.patch(`/api/tasks/${taskId}/`, { tag_ids: newTagIds })
             .then(() => getTasks())
             .catch((err) => console.error("unlinkTagFromTask error:", err));
     };
@@ -232,7 +192,7 @@ function Home() {
                             elapsed={
                                 activeTimerTaskId === task.id ? timerElapsed : 0
                             }
-                            isDisabled={disabledTimer(task.id)}
+                            isTimerDisabled={isTimerDisabled(task.id)}
                             onToggleTimer={() => onToggleTimer(task.id)}
                         />
                     ))}

@@ -16,7 +16,7 @@ function Task({
     elapsed = 0,
     onToggleTimer,
 
-    isDisabled = false,
+    isTimerDisabled = false,
 }) {
     // afficher la date sans les millisecondes
     const formattedDate = new Date(task.created_at).toLocaleString("fr-FR");
@@ -39,6 +39,43 @@ function Task({
 
     // nouvel état pour savoir si l'utilisateur édite les dates localement
     const [isDateEdited, setIsDateEdited] = useState(false);
+
+    // Vérifier que la date de fin est après la date de début
+    const [dateError, setDateError] = useState("");
+    const isEndAfterStart = (startLocal, endLocal) => {
+        if (!startLocal || !endLocal) return true;
+        const startMs = new Date(startLocal).getTime();
+        const endMs = new Date(endLocal).getTime();
+        return endMs > startMs;
+    };
+
+    const handleChangeStart = (value) => {
+        setEditStart(value);
+        setIsDateEdited(true);
+        // si la fin existe et devient avant le début, on aligne la fin
+        if (editEnd && !isEndAfterStart(value, editEnd)) {
+            setEditStart(editEnd);
+            setDateError(
+                "La date de début a été ajustée car elle était antérieure à la fin."
+            );
+        } else {
+            setDateError("");
+        }
+    };
+
+    const handleChangeEnd = (value) => {
+        setEditEnd(value);
+        setIsDateEdited(true);
+        if (editStart && !isEndAfterStart(editStart, value)) {
+            // Empêcher en automatique : on aligne la fin sur le début
+            setEditEnd(editStart);
+            setDateError(
+                "La date de fin ne peut pas être antérieure à la date de début."
+            );
+        } else {
+            setDateError("");
+        }
+    };
 
     useEffect(() => {
         if (filteredTags[0]) setNewTagId(String(filteredTags[0].id));
@@ -105,7 +142,7 @@ function Task({
                 <p className="task-content">{task.content}</p>
                 <p className="task-date">{formattedDate}</p>
 
-                <button onClick={handleStartStop} disabled={isDisabled}>
+                <button onClick={handleStartStop} disabled={isTimerDisabled}>
                     {isTimeRunning ? "Stop" : "Commencer"}
                 </button>
 
@@ -121,10 +158,7 @@ function Task({
                         <input
                             type="datetime-local"
                             value={editStart}
-                            onChange={(e) => {
-                                setEditStart(e.target.value);
-                                setIsDateEdited(true);
-                            }}
+                            onChange={(e) => handleChangeStart(e.target.value)}
                         />
                     </div>
                     <div>
@@ -132,16 +166,14 @@ function Task({
                         <input
                             type="datetime-local"
                             value={editEnd}
-                            onChange={(e) => {
-                                setEditEnd(e.target.value);
-                                setIsDateEdited(true);
-                            }}
+                            onChange={(e) => handleChangeEnd(e.target.value)}
                         />
                     </div>
                     <button type="button" onClick={saveDates}>
                         Enregistrer
                     </button>
                 </div>
+                {dateError && <p style={{ color: "crimson" }}>{dateError}</p>}
 
                 <div className="task-is-completed">
                     <input

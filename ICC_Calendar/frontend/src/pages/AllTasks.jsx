@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import api from "../api";
 import Task from "../components/Task";
 import Sidebar from "../components/Sidebar";
 import CreateTask from "../components/CreateTask";
+
+import useTimer from "../hooks/useTimer";
 import "../styles/AllTasks.css";
 
 function AllTasks() {
@@ -16,7 +18,9 @@ function AllTasks() {
     const [selectedTags, setSelectedTags] = useState([]);
 
     // filtre local simple
-    const [filter, setFilter] = useState("all"); // all | active | completed
+    const [filter, setFilter] = useState("all");
+
+    const [query, setQuery] = useState("");
 
     useEffect(() => {
         getTags();
@@ -24,12 +28,36 @@ function AllTasks() {
     }, []);
 
     // Task à afficher selon le filtre
-    const displayedTasks = tasks.filter((task) => {
-        if (filter === "all") return true;
-        if (filter === "completed") return task.is_completed;
-        // Task non complétée
-        return !task.is_completed;
-    });
+    const displayedTasks = useMemo(() => {
+        const lower_query = query.trim().toLowerCase();
+        return tasks
+            .filter((task) => {
+                if (filter === "all") return true;
+                if (filter === "completed") return task.is_completed;
+                return !task.is_completed;
+            })
+            .filter((task) => {
+                if (!lower_query) return true;
+                return (task.title || "").toLowerCase().includes(lower_query);
+            });
+    }, [tasks, filter, query]);
+
+    const updateTaskTime = (taskId, seconds) => {
+        if (!taskId) return;
+        api.patch(`/api/tasks/${taskId}/`, { time_spent: seconds })
+            .then(() => getTasks())
+            .catch((err) => console.error("updateTaskTime error:", err));
+    };
+
+    // useTimer centralise l'interval et le calcul d'elapsed
+    const {
+        activeTimerTaskId,
+        timerElapsed,
+        startTimer,
+        stopTimer,
+        onToggleTimer,
+        isTimerDisabled,
+    } = useTimer(updateTaskTime);
 
     const getTasks = () => {
         api.get("/api/tasks/").then((res) => {
@@ -150,6 +178,16 @@ function AllTasks() {
                     </button>
                 </div>
 
+                <div className="task-search-container">
+                    <input
+                        type="search"
+                        placeholder="Rechercher par titre..."
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        className="task-search"
+                    />
+                </div>
+
                 <div className="tasks-list">
                     {displayedTasks.map((task) => (
                         <Task
@@ -160,6 +198,13 @@ function AllTasks() {
                             onRemoveTag={unlinkTagFromTask}
                             availableTags={tags}
                             onUpdateTask={updateTask}
+                            onUpdateTimeSpent={updateTaskTime}
+                            isTimeRunning={activeTimerTaskId === task.id}
+                            elapsed={
+                                activeTimerTaskId === task.id ? timerElapsed : 0
+                            }
+                            isDisabled={isTimerDisabled(task.id)}
+                            onToggleTimer={() => onToggleTimer(task.id)}
                         />
                     ))}
                 </div>

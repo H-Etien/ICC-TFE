@@ -1,5 +1,8 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
+
+import api from "../api";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -12,6 +15,20 @@ import frLocale from "@fullcalendar/core/locales/fr";
 import "../styles/Calendar.css";
 
 function Calendar() {
+    const [tasks, setTasks] = useState([]);
+
+    const getTasks = () => {
+        api.get("/api/tasks/").then((res) => {
+            setTasks(res.data);
+            console.log(res.data);
+        });
+    };
+
+    useEffect(() => {
+        getTasks();
+        console.log(tasks);
+    }, []);
+
     return (
         <div className="calendar-container">
             <Sidebar />
@@ -44,6 +61,11 @@ function Calendar() {
                             },
                             {
                                 listDay: { buttonText: "Liste jour" },
+                            },
+                            {
+                                dayGridMonth: {
+                                    duration: { months: 3 },
+                                },
                             })
                         }
                         initialView="multiMonthYear"
@@ -61,23 +83,29 @@ function Calendar() {
                         //     listWeek: "Liste semaine",
                         //     today: "Aujourd'hui",
                         // }}
-                        events={[
-                            { title: "Événement 1", start: "2025-09-01" },
-                            {
-                                title: "Événement 2",
-                                start: "2025-09-05T12:00:00",
-                                end: "2025-09-06T14:00:00",
-                            },
-                            {
-                                title: "All day",
-                                start: "2025-09-10",
-                                allDay: true,
-                            },
-                        ]}
+                        // events={[
+                        //     { title: "Événement 1", start: "2025-09-01" },
+                        //     {
+                        //         title: "Événement 2",
+                        //         start: "2025-09-05T12:00:00",
+                        //         end: "2025-09-06T14:00:00",
+                        //     },
+                        //     {
+                        //         title: "All day",
+                        //         start: "2025-09-10",
+                        //         allDay: true,
+                        //     },
+                        // ]}
+
+                        events={tasks.map((task) => ({
+                            title: task.title,
+                            start: task.start_time,
+                            end: task.end_time,
+                        }))}
                         headerToolbar={{
                             left: "prev,next today",
                             center: "title",
-                            right: "dayGridYear,dayGridMonth,timeGridWeek,timeGridDay,multiMonthYear,listDay,listWeek",
+                            right: "dayGridYear,dayGridMonth,timeGridWeek,timeGridDay, multiMonthYear,listDay,listWeek",
                         }}
                     />
                 </div>
