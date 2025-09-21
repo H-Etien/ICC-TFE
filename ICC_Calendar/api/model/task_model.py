@@ -22,7 +22,13 @@ class Task(models.Model):
     start_time = models.DateTimeField(default=get_default_start_time)
     end_time = models.DateTimeField(default=get_default_end_time)
     
+    is_completed = models.BooleanField(default=False)
+    completed_date = models.DateTimeField(null=True, blank=True)
+    
     tags = models.ManyToManyField(Tag, related_name='tasks', blank=True)
+    
+    time_spent = models.DurationField(default=datetime.timedelta(0))
 
     def __str__(self):
         return self.title
+    

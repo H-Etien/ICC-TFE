@@ -43,7 +43,7 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ( "id", "user", "title", "content", "created_at", "updated_at", "start_time", "end_time", "tags", "tag_ids")
+        fields = ( "id", "user", "title", "content", "created_at", "updated_at", "start_time", "end_time", "tags", "tag_ids", "is_completed", "completed_date", "time_spent" )
         extra_kwargs = {"user": {"read_only": True}}
 
     def __init__(self, *args, **kwargs):
@@ -51,3 +51,10 @@ class TaskSerializer(serializers.ModelSerializer):
         # Filtrer les tags disponibles par utilisateur
         user = self.context["request"].user
         self.fields["tag_ids"].queryset = Tag.objects.filter(user=user)
+
+    def create(self, validated_data):
+        tags = validated_data.pop("tags", [])
+        task = Task.objects.create(**validated_data)
+        if tags:
+            task.tags.set(tags)
+        return task

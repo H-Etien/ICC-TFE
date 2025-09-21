@@ -2,25 +2,60 @@ import { useState, useEffect } from "react";
 
 import api from "../api";
 import Task from "../components/Task";
+import Tag from "../components/Tag";
 import Sidebar from "../components/Sidebar";
+import Calendar from "../components/Calendar";
+import CreateTask from "../components/CreateTask";
+
+import useTimer from "../hooks/useTimer";
+import "../styles/Home.css";
 
 function Home() {
     const [tasks, setTasks] = useState([]);
     const [content, setContent] = useState("");
     const [title, setTitle] = useState("");
+
+    const [startTime, setStartTime] = useState("");
+    const [endTime, setEndTime] = useState("");
+
     const [tags, setTags] = useState([]);
-    const [newTag, setNewTag] = useState("");
     const [selectedTags, setSelectedTags] = useState([]);
+
+    // filtre: 'all' | 'active' | 'completed'
+    const [filter, setFilter] = useState("all");
+
+    // Task à afficher selon le filtre
+    const displayedTasks = tasks.filter((task) => {
+        if (filter === "all") return true;
+        if (filter === "completed") return task.is_completed;
+        // Task non complétée
+        return !task.is_completed;
+    });
 
     useEffect(() => {
         getTasks();
         getTags();
     }, []);
 
+    const updateTaskTime = async (taskId, seconds) => {
+        try {
+            await api.patch(`/api/tasks/${taskId}/`, { time_spent: seconds });
+            // rafraîchir les tâches après la persistance
+            getTasks();
+        } catch (err) {
+            console.error("updateTaskTime error:", err);
+        }
+    };
+
+    // useTimer centralise l'interval et le calcul d'elapsed
+    const { activeTimerTaskId, timerElapsed, onToggleTimer, isTimerDisabled } =
+        useTimer(updateTaskTime);
+
     const getTasks = () => {
-        api.get("/api/tasks/")
-            .then((res) => setTasks(res.data))
-            .catch((err) => alert(err));
+        api.get("/api/tasks/").then((res) => {
+            setTasks(res.data);
+            console.log(res.data);
+        });
     };
 
     const deleteTask = (id) => {
@@ -45,53 +80,142 @@ function Home() {
 
     const createTask = (e) => {
         e.preventDefault();
-        api.post("/api/tasks/", { title, content, tag_ids: selectedTags })
+
+        // Tous les objets de la tâche
+        const newTask = {
+            title,
+            content,
+
+            tag_ids: selectedTags,
+        };
+        if (startTime) newTask.start_time = new Date(startTime).toISOString();
+        if (endTime) newTask.end_time = new Date(endTime).toISOString();
+
+        //api.post("/api/tasks/", { title, content, tag_ids: selectedTags })
+        api.post("/api/tasks/", newTask)
             .then(() => {
                 setTitle("");
                 setContent("");
+                setStartTime("");
+                setEndTime("");
                 setSelectedTags([]);
                 getTasks();
             })
             .catch((err) => console.error(err));
     };
 
-    const createTag = (e) => {
-        e.preventDefault();
-        api.post("/api/tags/", { name: newTag })
-            .then(() => {
-                setNewTag("");
-                getTags();
-            })
-            .catch((err) => console.error(err));
+    const addTagToTask = (taskId, tagId) => {
+        const task = tasks.find((t) => t.id === taskId);
+        const currentIds = task.tags.map((t) => t.id);
+
+        if (currentIds.includes(tagId)) return;
+
+        const newTagIds = [...currentIds, tagId];
+
+        api.patch(`/api/tasks/${taskId}/`, { tag_ids: newTagIds })
+            .then(() => getTasks())
+            .catch((err) => console.error("addTagToTask error:", err));
     };
 
-    const deleteTag = (id) => {
-        if (!confirm("Supprimer cette étiquette ?")) return;
-        api.delete(`/api/tags/${id}/`)
-            .then(() => {
-                // rafraîchir la liste des tags et, si besoin, les tasks
-                getTags();
-                getTasks();
-            })
+    // Retirer un tag d'une tâche
+    const unlinkTagFromTask = (taskId, tagId) => {
+        const task = tasks.find((t) => t.id === taskId);
+        const currentTagIds = task.tags.map((t) => t.id);
+
+        const newTagIds = currentTagIds.filter((id) => id !== tagId);
+
+        api.patch(`/api/tasks/${taskId}/`, { tag_ids: newTagIds })
+            .then(() => getTasks())
+            .catch((err) => console.error("unlinkTagFromTask error:", err));
+    };
+
+    const updateTask = (taskId, taskContent) => {
+        // convertit les datetime-local (si fournis sous forme locale) en ISO YYYY-MM-DDTHH:MM
+        api.patch(`/api/tasks/${taskId}/`, taskContent)
+            .then(() => getTasks())
             .catch((err) => {
-                console.error("Erreur suppression tag :", err);
-                alert("Impossible de supprimer l'étiquette");
+                console.error("erreur updateTask: ", err);
             });
     };
 
     // Retourne toutes les tâches et le formulaire de création
     return (
-        <>
-            <Sidebar />
-            <div>
-                <h2>Tâches</h2>
-                {tasks.map((task) => (
-                    <Task key={task.id} task={task} onDelete={deleteTask} />
-                ))}
+        // onTagsUpdated est une fonction pour rafraîchir la liste des tags dans Home
+        <div className="home-container">
+            <Sidebar
+                //prop callback pour rafraîchir les tâches et les tags
+                onTagsUpdated={() => {
+                    getTags();
+                    getTasks();
+                }}
+            />
+            <div className="tasks-section">
+                <div className="task-filters">
+                    <button
+                        type="button"
+                        className={filter === "all" ? "active" : ""}
+                        onClick={() => setFilter("all")}
+                    >
+                        Tout
+                    </button>
+                    <button
+                        type="button"
+                        className={filter === "active" ? "active" : ""}
+                        onClick={() => setFilter("active")}
+                    >
+                        En cours
+                    </button>
+                    <button
+                        type="button"
+                        className={filter === "completed" ? "active" : ""}
+                        onClick={() => setFilter("completed")}
+                    >
+                        Terminés
+                    </button>
+                </div>
+
+                <hr />
+
+                <div>
+                    <h2>Tâches</h2>
+                    {displayedTasks.map((task) => (
+                        <Task
+                            key={task.id}
+                            task={task}
+                            onDelete={deleteTask}
+                            onAddTag={addTagToTask}
+                            onRemoveTag={unlinkTagFromTask}
+                            availableTags={tags}
+                            onUpdateTask={updateTask}
+                            onUpdateTimeSpent={updateTaskTime}
+                            isTimeRunning={activeTimerTaskId === task.id}
+                            elapsed={
+                                activeTimerTaskId === task.id ? timerElapsed : 0
+                            }
+                            isTimerDisabled={isTimerDisabled(task.id)}
+                            onToggleTimer={() => onToggleTimer(task.id)}
+                        />
+                    ))}
+                </div>
             </div>
 
             <hr />
 
+            <CreateTask
+                title={title}
+                setTitle={setTitle}
+                content={content}
+                setContent={setContent}
+                startTime={startTime}
+                setStartTime={setStartTime}
+                endTime={endTime}
+                setEndTime={setEndTime}
+                tags={tags}
+                selectedTags={selectedTags}
+                handleTagChange={handleTagChange}
+                createTask={createTask}
+            />
+            {/* 
             <form onSubmit={createTask}>
                 <input
                     type="text"
@@ -99,17 +223,37 @@ function Home() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
-                <br />
+                <hr />
                 <textarea
                     placeholder="Contenu"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                 />
-                <br />
+                <hr />
+
+                <div className="tache-debut">
+                    Début
+                    <input
+                        type="datetime-local"
+                        value={startTime}
+                        onChange={(e) => setStartTime(e.target.value)}
+                    />
+                </div>
+                <hr />
+                <div className="tache-fin">
+                    Fin
+                    <input
+                        type="datetime-local"
+                        value={endTime}
+                        onChange={(e) => setEndTime(e.target.value)}
+                    />
+                </div>
+
+                <hr />
 
                 <div>
                     {tags.map((tag) => (
-                        <label key={tag.id}>
+                        <div key={tag.id}>
                             <input
                                 type="checkbox"
                                 value={tag.id}
@@ -117,21 +261,16 @@ function Home() {
                                 onChange={handleTagChange}
                             />
                             {tag.name}
-                            <button
-                                type="button"
-                                onClick={() => deleteTag(tag.id)}
-                            >
-                                Supprimer
-                            </button>
-                        </label>
+                        </div>
                     ))}
                 </div>
 
                 <br />
                 <button type="submit">Créer</button>
-            </form>
+            </form> */}
 
-            <hr />
+            {/* 
+            // Création de tags, déjà dans Sidebar.jsx 
 
             <form onSubmit={createTag}>
                 <div>
@@ -158,7 +297,8 @@ function Home() {
                     <button type="submit">Créer</button>
                 </div>
             </form>
-        </>
+            */}
+        </div>
     );
 }
 

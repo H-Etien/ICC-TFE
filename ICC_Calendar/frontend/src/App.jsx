@@ -6,12 +6,15 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
+import Calendar from "./components/Calendar";
+import AllTasks from "./pages/AllTasks";
 
 function Logout() {
     localStorage.clear();
     return <Navigate to="/login" />;
 }
 
+// Enlève les tokens de connexion
 function RegisterAndLogout() {
     localStorage.clear();
     return <Register />;
@@ -26,6 +29,22 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <Home />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/calendar"
+                    element={
+                        <ProtectedRoute>
+                            <Calendar />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/tasks"
+                    element={
+                        <ProtectedRoute>
+                            <AllTasks />
                         </ProtectedRoute>
                     }
                 />
