@@ -42,11 +42,20 @@ function AllTasks() {
             });
     }, [tasks, filter, query]);
 
-    const updateTaskTime = (taskId, seconds) => {
-        if (!taskId) return;
-        api.patch(`/api/tasks/${taskId}/`, { time_spent: seconds })
-            .then(() => getTasks())
-            .catch((err) => console.error("updateTaskTime error:", err));
+    const updateTaskTime = async (taskId, secondsToAdd) => {
+        try {
+            // pour incrémenter le temps passé sur une tâche et ne pas partir de 0
+            const secondsAlreadySpent = tasks.find(
+                (task) => task.id === taskId
+            ).time_spent;
+            const totalTime = (secondsToAdd || 0) + (secondsAlreadySpent || 0);
+            await api.patch(`/api/tasks/${taskId}/`, { time_spent: totalTime });
+
+            // rafraîchir les tâches après la persistance
+            getTasks();
+        } catch (err) {
+            console.error("updateTaskTime error:", err);
+        }
     };
 
     // useTimer centralise l'interval et le calcul d'elapsed

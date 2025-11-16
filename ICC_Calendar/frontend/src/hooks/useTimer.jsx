@@ -41,11 +41,13 @@ function useTimer(updateTaskTime) {
         return { taskId: stoppedTaskId, secondsElapsed };
     };
 
-    const await_updateTaskTime = async (taskId, seconds) => {
+    const await_updateTaskTime = async (taskId, secondsToAdd) => {
+        if (!taskId) return;
         try {
-            await updateTaskTime(taskId, seconds);
+            console.log("temps tâche : ", { taskId, secondsToAdd });
+            await updateTaskTime(taskId, secondsToAdd);
         } catch (e) {
-            console.error("useTimer onPersist error:", e);
+            console.error("useTimer error:", e);
         }
     };
 
@@ -62,8 +64,9 @@ function useTimer(updateTaskTime) {
 
         // Pour le toggle button : si le timer actif est celui de la tâche, on l'arrête
         if (activeTimerTaskId === taskId) {
-            const { taskId: stoppedTaskId, seconds } = stopTimer();
-            if (stoppedTaskId) await_updateTaskTime(stoppedTaskId, seconds);
+            const { taskId: stoppedTaskId, secondsElapsed } = stopTimer();
+            if (stoppedTaskId)
+                await await_updateTaskTime(stoppedTaskId, secondsElapsed);
             return;
         }
 

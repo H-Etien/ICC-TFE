@@ -132,6 +132,13 @@ function Task({
         }
     };
 
+    const convertTimeSpent = (seconds) => {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+        return `${h}h ${m}m ${s}s`;
+    };
+
     return (
         <>
             {task.is_completed && (
@@ -145,6 +152,12 @@ function Task({
                 <button onClick={handleStartStop} disabled={isTimerDisabled}>
                     {isTimeRunning ? "Stop" : "Commencer"}
                 </button>
+
+                {!isTimeRunning && (
+                    <p>
+                        Temps total passé: {convertTimeSpent(task.time_spent)}
+                    </p>
+                )}
 
                 {isTimeRunning && (
                     <p style={{ color: "green" }}>

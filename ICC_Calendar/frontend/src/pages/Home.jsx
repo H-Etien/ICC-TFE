@@ -37,9 +37,15 @@ function Home() {
         getTags();
     }, []);
 
-    const updateTaskTime = async (taskId, seconds) => {
+    const updateTaskTime = async (taskId, secondsToAdd) => {
         try {
-            await api.patch(`/api/tasks/${taskId}/`, { time_spent: seconds });
+            // pour incrémenter le temps passé sur une tâche et ne pas partir de 0
+            const secondsAlreadySpent = tasks.find(
+                (task) => task.id === taskId
+            ).time_spent;
+            const totalTime = (secondsToAdd || 0) + (secondsAlreadySpent || 0);
+            await api.patch(`/api/tasks/${taskId}/`, { time_spent: totalTime });
+
             // rafraîchir les tâches après la persistance
             getTasks();
         } catch (err) {
