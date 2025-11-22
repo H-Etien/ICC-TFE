@@ -54,7 +54,7 @@ function Form({ route, method }) {
                 required
             />
             <button type="submit" disabled={loading}>
-                {loading ? "Loading..." : "Submit"}
+                {loading ? "Loading..." : "Envoyer"}
             </button>
         </form>
     );

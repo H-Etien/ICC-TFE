@@ -27,7 +27,7 @@ class Task(models.Model):
     
     tags = models.ManyToManyField(Tag, related_name='tasks', blank=True)
     
-    time_spent = models.DurationField(default=datetime.timedelta(0))
+    time_spent = models.IntegerField(default=0) 
 
     def __str__(self):
         return self.title
