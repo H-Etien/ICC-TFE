@@ -1,3 +1,5 @@
+// Hook personnalisé pour gérer un minuteur de tâche
+
 import { useState, useEffect } from "react";
 
 function useTimer(updateTaskTime) {
