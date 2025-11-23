@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 
+import TaskListSortable from "../components/TaskListSortable";
+
 import api from "../api";
 import Task from "../components/Task";
 import Tag from "../components/Tag";
@@ -36,6 +38,17 @@ function Home() {
         getTasks();
         getTags();
     }, []);
+
+    const onReorder = async (orderArray) => {
+        // persister en bulk (implémenter endpoint backend /api/tasks/reorder/)
+        try {
+            await api.post("/api/tasks/reorder/", { order: orderArray });
+            // rafraîchir si besoin
+            getTasks();
+        } catch (err) {
+            console.error("reorder error", err);
+        }
+    };
 
     const updateTaskTime = async (taskId, secondsToAdd) => {
         try {
@@ -184,7 +197,7 @@ function Home() {
 
                 <div>
                     <h2>Tâches</h2>
-                    {displayedTasks.map((task) => (
+                    {/* {displayedTasks.map((task) => (
                         <Task
                             key={task.id}
                             task={task}
@@ -201,7 +214,26 @@ function Home() {
                             isTimerDisabled={isTimerDisabled(task.id)}
                             onToggleTimer={() => onToggleTimer(task.id)}
                         />
-                    ))}
+                    ))} */}
+                    <div>
+                        <TaskListSortable
+                            tasks={displayedTasks}
+                            setTasks={setTasks}
+                            onReorder={onReorder}
+                            renderTaskProps={{
+                                onDelete: deleteTask,
+                                availableTags: tags,
+                                onAddTag: addTagToTask,
+                                onRemoveTag: unlinkTagFromTask,
+                                onUpdateTask: updateTask,
+                                onUpdateTimeSpent: updateTaskTime,
+                                isTimeRunning: (id) => activeTimerTaskId === id,
+                                elapsed: timerElapsed,
+                                isTimerDisabled,
+                                onToggleTimer,
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
 
