@@ -26,6 +26,9 @@ function Home() {
     // filtre: 'all' | 'active' | 'completed'
     const [filter, setFilter] = useState("all");
 
+    // Afficher les Tasks en liste ou en grille
+    const [viewMode, setViewMode] = useState("list");
+
     // Task à afficher selon le filtre
     const displayedTasks = tasks.filter((task) => {
         if (filter === "all") return true;
@@ -170,6 +173,20 @@ function Home() {
             />
             <div className="tasks-section">
                 <div className="task-filters">
+                    <div className="view-mode-toggle">
+                        <button
+                            onClick={() => setViewMode("list")}
+                            className={viewMode === "list" ? "active" : ""}
+                        >
+                            Liste
+                        </button>
+                        <button
+                            onClick={() => setViewMode("grid")}
+                            className={viewMode === "grid" ? "active" : ""}
+                        >
+                            Grille
+                        </button>{" "}
+                    </div>
                     <button
                         type="button"
                         className={filter === "all" ? "active" : ""}
@@ -215,11 +232,16 @@ function Home() {
                             onToggleTimer={() => onToggleTimer(task.id)}
                         />
                     ))} */}
-                    <div>
+                    <div
+                        className={
+                            viewMode === "grid" ? "tasks-grid" : "tasks-list"
+                        }
+                    >
                         <TaskListSortable
                             tasks={displayedTasks}
                             setTasks={setTasks}
                             onReorder={onReorder}
+                            layout={viewMode} // 'list' | 'grid'
                             renderTaskProps={{
                                 onDelete: deleteTask,
                                 availableTags: tags,

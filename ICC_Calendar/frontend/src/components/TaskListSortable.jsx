@@ -9,6 +9,7 @@ import {
     SortableContext,
     arrayMove,
     verticalListSortingStrategy,
+    rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import SortableTask from "./SortableTask";
 
@@ -24,6 +25,7 @@ function TaskListSortable({
     setTasks,
     onReorder,
     renderTaskProps = {},
+    layout = "list",
 }) {
     const ids = tasks.map((t) => String(t.id));
 
@@ -53,9 +55,12 @@ function TaskListSortable({
         }
     };
 
+    const layout_task_strategy =
+        layout === "grid" ? rectSortingStrategy : verticalListSortingStrategy;
+
     return (
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-            <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+            <SortableContext items={ids} strategy={layout_task_strategy}>
                 {tasks.map((task) => (
                     <SortableTask
                         key={task.id}
