@@ -31,6 +31,8 @@ class TaskListCreate(generics.ListCreateAPIView):
 
         F est un objet qui référence un champ de modèle dans une expression SQL
         -> pas de condition de course (read-modify-write) si plusieurs requêtes en même temps  
+
+        order + 1 pour que la nouvelle Task soit la 1er dans la liste, les autres ont +1 dans l'ordre
         """
         with transaction.atomic():
             Task.objects.filter(user=user).update(order=F("order") + 1)
