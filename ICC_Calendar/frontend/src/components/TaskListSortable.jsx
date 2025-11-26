@@ -47,12 +47,11 @@ function TaskListSortable({
         const newIndex = ids.indexOf(over.id);
         const newTasks = arrayMove(tasks, oldIndex, newIndex);
 
-        if (typeof setTasks === "function") setTasks(newTasks);
+        setTasks(newTasks);
 
-        if (typeof onReorder === "function") {
-            const payload = newTasks.map((t, i) => ({ id: t.id, order: i }));
-            onReorder(payload);
-        }
+        // envoyer le nouvel ordre au backend
+        const payload = newTasks.map((t, i) => ({ id: t.id, order: i }));
+        onReorder(payload);
     };
 
     const layout_task_strategy =

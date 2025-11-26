@@ -5,10 +5,13 @@ import Task from "./Task";
 
 /**
     Conteneur sortable pour Task.
-    renderTaskProps: objet passé depuis TaskListSortable pour déléguer handlers/flags
+    renderTaskProps: objet passé depuis TaskListSortable pour donner la même props que Task normale.
  */
 function SortableTask({ task, renderTaskProps = {} }) {
-    const isDragDisabled = renderTaskProps.isTimerDisabled(task.id);
+    // Empêche le drag si le timer est en cours
+    //const isDragDisabled = renderTaskProps.isTimerDisabled(task.id);
+
+    const isDragDisabled = false;
 
     const { attributes, listeners, setNodeRef, transform, transition } =
         useSortable({
