@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
-from django.db.models import Max
+from django.db.models import Max, F
 
 # Obtenir toutes les Tasks
 class TaskListCreate(generics.ListCreateAPIView):
@@ -19,17 +19,24 @@ class TaskListCreate(generics.ListCreateAPIView):
 
     # Obtenir les Tasks pour chaque User
     def get_queryset(self):
-        return Task.objects.filter(user=self.request.user)
+        return Task.objects.filter(user=self.request.user).order_by("order")
 
     def perform_create(self, serializer):
          # positionner l'ordre à la fin de la liste de l'utilisateur
         user = self.request.user
-        max_order = Task.objects.filter(user=user).aggregate(Max('order'))['order__max']
-        if max_order is None:
-            max_order = -1
-        serializer.save(user=user, order=max_order + 1)
-       
 
+        """
+        transation.atomic = ouvre une transaction DB
+        Toutes opérations sont appliqués ensemble et si une erreur, alors rollback
+
+        F est un objet qui référence un champ de modèle dans une expression SQL
+        -> pas de condition de course (read-modify-write) si plusieurs requêtes en même temps  
+        """
+        with transaction.atomic():
+            Task.objects.filter(user=user).update(order=F("order") + 1)
+            serializer.save(user=user, order=0)
+       
+    
 
 # Supprimer, modifier une Task
 class TaskUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
@@ -49,9 +56,8 @@ class TaskReorder(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        """
-        Attendu: request.data = { "order": [ { "id": <task_id>, "order": <index> }, ... ] }
-        """
+        
+        # Attendu: request.data = { "order": [ { "id": <task_id>, "order": <index> }, ... ] }
         order_tasks = request.data.get("order")
 
         user = request.user
@@ -61,10 +67,11 @@ class TaskReorder(APIView):
         transation.atomic = ouvre une transaction DB
         Toutes opérations sont appliqués ensemble et si une erreur, alors rollback
         """
+        
         with transaction.atomic():
-            # récupérer les tâches de l'utilisateur concernées
-            tasks = Task.objects.filter(user=user, id__in=ids)
-            tasks_map = {t.id: t for t in tasks}
+            tasks = list(Task.objects.filter(user=user, id__in=ids))
+            tasks_map = {task.id: task for task in tasks}
+            updated = []
             for item in order_tasks:
                 try:
                     tid = int(item.get("id"))
@@ -74,4 +81,7 @@ class TaskReorder(APIView):
                 task = tasks_map.get(tid)
                 if task:
                     task.order = order_val
-                    task.save()
+                    updated.append(task)
+            if updated:
+                Task.objects.bulk_update(updated, ["order"])
+        return Response({"status": "ok"}, status=status.HTTP_200_OK)
