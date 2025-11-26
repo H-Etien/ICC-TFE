@@ -27,7 +27,11 @@ class Task(models.Model):
     
     tags = models.ManyToManyField(Tag, related_name='tasks', blank=True)
     
+    # Temps passé en secondes sur une Task 
     time_spent = models.IntegerField(default=0) 
+
+    # Ordre de la tâche pour le tri personnalisé
+    order = models.IntegerField(default=0,db_index=True)
 
     def __str__(self):
         return self.title

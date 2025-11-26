@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 
+from .views.tasks import TaskReorder
+
 
 from .views import RoomView, CreateUserView, TaskListCreate, TaskUpdateDelete, TagListCreate, TagUpdateDelete
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
@@ -20,4 +22,7 @@ urlpatterns = [
     # Tags, ajout, modification, suppression
     path('tags/', TagListCreate.as_view(), name="tag-list-create"),
     path('tags/<int:pk>/', TagUpdateDelete.as_view(), name="tag-update-delete"),
+    
+    # Pour garder l'ordre des Task
+    path('tasks/reorder/', TaskReorder.as_view(), name="task-reorder"),
 ]
