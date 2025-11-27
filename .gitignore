@@ -3,11 +3,9 @@ venv/
 db.sqlite3
 
 // Frontend build 
-package*.json
-babel.config.json
-jsconfig.json  
+
 node_modules/
-webpack.config.js
+
 
 migrations/
 __pycache__/
