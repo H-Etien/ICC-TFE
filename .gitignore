@@ -1,0 +1,12 @@
+venv/
+
+db.sqlite3
+
+// Frontend build 
+
+node_modules/
+
+
+migrations/
+__pycache__/
+
