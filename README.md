@@ -4,7 +4,7 @@ Projet d'application de productivité + calendrier + To-Do + Assistant IA
 
 ## 📑 Table des matières
 
--   [Description](#📌-description)
+-   [Description](#description)
 -   [Technologies utilisées](#🛠️-technologies-utilisées)
 -   [Installation](#📦-installation)
 -   [Architecture générale](#-architecture-générale)
