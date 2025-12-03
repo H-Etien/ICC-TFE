@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from ..serializers import TaskSerializer
 from ..models import Task
 
-class TaskListCreate(generics.ListCreateAPIView):
+class TaskListCreateView(generics.ListCreateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]

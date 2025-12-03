@@ -4,7 +4,8 @@ from rest_framework import serializers
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'email']
+        fields = '__all__'
+        #fields = ['id', 'username', 'password', 'email']
         
         # write only pour ne pas renvoyer le mot de passe dans les réponses API
         extra_kwargs = {'password': {'write_only': True}}
