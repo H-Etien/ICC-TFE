@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { useState, useEffect } from "react";
 
 import api from "../api";
@@ -7,7 +7,7 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 
 // Pour protéger les routes nécessitant une authentification
 function ProtectedRoute({ children }) {
-    const [isAuthorized, setIsAuthorized] = useState(null);
+    const [isAuthorized, setIsAuthorized] = useState(false);
 
     useEffect(() => {
         authenticate().catch(() => setIsAuthorized(false)); // si problème, pas autorisé à se connecter sur le lien
