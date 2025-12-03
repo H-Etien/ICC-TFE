@@ -1,3 +1,4 @@
+#!/bin/bash
 # Activer le backend Django
 
 source venv/Scripts/activate
