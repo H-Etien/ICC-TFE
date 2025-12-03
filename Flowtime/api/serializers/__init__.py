@@ -1,2 +1,3 @@
 from .user_serializers import UserSerializer
 from .task_serializers import TaskSerializer
+from .project_serializers import ProjectSerializer
