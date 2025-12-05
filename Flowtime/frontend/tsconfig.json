@@ -2,7 +2,7 @@
     "compilerOptions": {
         //JS moderne 2020
         "useDefineForClassFields": true,
-        "lib": ["DOM", "ES2020"],
+        "lib": ["DOM", "ESNext"],
 
         // Plus besoin de react import a chaque fichier
         "jsx": "react-jsx",
@@ -16,7 +16,9 @@
         "forceConsistentCasingInFileNames": true,
         "noEmit": true,
         "baseUrl": ".",
-        "paths": {}
+        "paths": {},
+
+        "allowJs": false
     },
 
     // Regarde uniquement dans le dossier src

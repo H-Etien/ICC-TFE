@@ -1,13 +1,18 @@
 import { Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useState, useEffect } from "react";
+import { JSX } from "react";
 
 import api from "../api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 
+type Props = {
+    children: JSX.Element;
+};
+
 // Pour protéger les routes nécessitant une authentification
-function ProtectedRoute({ children }) {
-    const [isAuthorized, setIsAuthorized] = useState(false);
+function ProtectedRoute({ children }: Props): JSX.Element | null {
+    const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
 
     useEffect(() => {
         authenticate().catch(() => setIsAuthorized(false)); // si problème, pas autorisé à se connecter sur le lien
@@ -41,7 +46,7 @@ function ProtectedRoute({ children }) {
         }
 
         // Pour vérifier si le token a expiré
-        const decoded = jwtDecode(token);
+        const decoded = jwtDecode<{ exp: number }>(token);
         const TokenExpiration = decoded.exp * 1000;
         const now = Date.now() / 1000;
 
