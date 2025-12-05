@@ -8,9 +8,9 @@ import {
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 import Home from "./pages/Home.jsx";
-import Login from "./pages/Login.jsx";
-import Register from "./pages/Register.jsx";
+import Login from "./pages/Login.tsx";
 import NotFound from "./pages/NotFound.jsx";
+import Register from "./pages/Register.jsx";
 
 function Logout() {
     // Pour supprimer les tokens du localStorage lors de la déconnexion
@@ -38,6 +38,8 @@ function App() {
                     />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<RegisterAndLogout />} />
+                    <Route path="/signin" element={<Register />} />
+
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </Router>
