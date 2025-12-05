@@ -5,12 +5,12 @@ import {
     Route,
     Navigate,
 } from "react-router-dom";
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.js";
 
-import Home from "./pages/Home.jsx";
-import Login from "./pages/Login.tsx";
-import NotFound from "./pages/NotFound.jsx";
-import Register from "./pages/Register.jsx";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import NotFound from "./pages/NotFound";
+import Register from "./pages/Register";
 
 function Logout() {
     // Pour supprimer les tokens du localStorage lors de la déconnexion
