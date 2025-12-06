@@ -22,117 +22,119 @@ import {
     SitemarkIcon,
 } from "../components/CustomIcons";
 
-function LoginForm({ route, method }: { route: string; method: string }) {
-    const validateInputs = () => {
-        const email = document.getElementById("email") as HTMLInputElement;
-        const password = document.getElementById(
-            "password"
-        ) as HTMLInputElement;
-        const username = document.getElementById(
-            "username"
-        ) as HTMLInputElement;
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { JSX } from "react";
 
-        let isValid = true;
+import api from "../api";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 
-        if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-            setEmailError(true);
-            setEmailErrorMessage("Please enter a valid email address.");
-            isValid = false;
-        } else {
-            setEmailError(false);
-            setEmailErrorMessage("");
-        }
+type Props = { route: string; method: string };
 
-        if (!password.value || password.value.length < 6) {
+function LoginForm({ route, method }: Props): JSX.Element {
+    const [passwordError, setPasswordError] = useState(false);
+    const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
+    const [nameError, setNameError] = useState(false);
+    const [nameErrorMessage, setNameErrorMessage] = useState("");
+
+    const navigate = useNavigate();
+
+    // Envoi des données du formulaire au backend
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        // Pour empêcher le rechargement de la page
+        event.preventDefault();
+
+        setPasswordError(false);
+        setPasswordErrorMessage("");
+        setNameError(false);
+        setNameErrorMessage("");
+
+        const data = new FormData(event.currentTarget);
+        const username = data.get("username");
+        const password = data.get("password");
+
+        console.log({
+            username,
+            password,
+        });
+
+        try {
+            // Envoi des données de l'utilisateur au backend
+            const response = await api.post(route, {
+                username,
+                password,
+            });
+
+            // Debug: show full response
+            console.log("Login response:", response.status, response.data);
+
+            if (response.data.access) {
+                // Pour stocker les tokens dans le localStorage
+                localStorage.setItem(ACCESS_TOKEN, response.data.access);
+                localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
+
+                // Rediriger vers la page Home après la connexion
+                navigate("/");
+            }
+        } catch (error: any) {
+            // Si erreur d'identifiant ou mot de passe
             setPasswordError(true);
-            setPasswordErrorMessage(
-                "Password must be at least 6 characters long."
-            );
-            isValid = false;
-        } else {
-            setPasswordError(false);
-            setPasswordErrorMessage("");
+            setPasswordErrorMessage("Identifiant ou mot de passe incorrect");
         }
-
-        if (!username.value || username.value.length < 1) {
-            setNameError(true);
-            setNameErrorMessage("Username is required.");
-            isValid = false;
-        } else {
-            setNameError(false);
-            setNameErrorMessage("");
-        }
-
-        return isValid;
     };
-
-    if (method === "login") {
-        // Pour stocker les tokens dans le localStorage
-        localStorage.setItem(ACCESS_TOKEN, response.data.access);
-        localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
-
-        // Rediriger vers la page Home après la connexion
-        navigate("/");
-    }
-
-    <Box
-        component="form"
-        onSubmit={handleSubmit}
-        noValidate
-        sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            gap: 2,
-        }}
-    >
-        <FormControl>
-            <FormLabel htmlFor="email">Email</FormLabel>
-            <TextField
-                error={emailError}
-                helperText={emailErrorMessage}
-                id="email"
-                type="email"
-                name="email"
-                placeholder="your@email.com"
-                autoComplete="email"
-                autoFocus
-                required
-                fullWidth
-                variant="outlined"
-                color={emailError ? "error" : "primary"}
-            />
-        </FormControl>
-        <FormControl>
-            <FormLabel htmlFor="password">Password</FormLabel>
-            <TextField
-                error={passwordError}
-                helperText={passwordErrorMessage}
-                name="password"
-                placeholder="••••••"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                autoFocus
-                required
-                fullWidth
-                variant="outlined"
-                color={passwordError ? "error" : "primary"}
-            />
-        </FormControl>
-        <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-        />
-        <ForgotPassword open={open} handleClose={handleClose} />
-        <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            onClick={validateInputs}
+    return (
+        <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+                gap: 2,
+            }}
         >
-            Connexion
-        </Button>
+            <FormControl>
+                <FormLabel htmlFor="username">Identifiant</FormLabel>
+                <TextField
+                    autoComplete="username"
+                    name="username"
+                    required
+                    fullWidth
+                    id="username"
+                    placeholder="Jonh123"
+                    error={nameError}
+                    helperText={nameErrorMessage}
+                    color={nameError ? "error" : "primary"}
+                />
+            </FormControl>
+            <FormControl>
+                <FormLabel htmlFor="password">Password</FormLabel>
+                <TextField
+                    error={passwordError}
+                    helperText={passwordErrorMessage}
+                    name="password"
+                    placeholder="••••••"
+                    type="password"
+                    id="password"
+                    autoComplete="current-password"
+                    autoFocus
+                    required
+                    fullWidth
+                    variant="outlined"
+                    color={passwordError ? "error" : "primary"}
+                />
+            </FormControl>
+            <FormControlLabel
+                control={<Checkbox value="remember" color="primary" />}
+                label="Remember me"
+            />
+
+            <Button type="submit" fullWidth variant="contained">
+                Connexion
+            </Button>
+            {/* <ForgotPassword open={open} handleClose={handleClose} />
+
         <Link
             component="button"
             type="button"
@@ -141,7 +143,8 @@ function LoginForm({ route, method }: { route: string; method: string }) {
             sx={{ alignSelf: "center" }}
         >
             Forgot your password?
-        </Link>
-    </Box>;
+        </Link> */}
+        </Box>
+    );
 }
 export default LoginForm;

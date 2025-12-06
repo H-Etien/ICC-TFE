@@ -11,6 +11,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
 
 function Logout() {
     // Pour supprimer les tokens du localStorage lors de la déconnexion
@@ -39,6 +40,8 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<RegisterAndLogout />} />
                     <Route path="/signin" element={<Register />} />
+                    <Route path="/logout" element={<Logout />} />
+                    <Route path="/dash" element={<Dashboard />} />
 
                     <Route path="*" element={<NotFound />} />
                 </Routes>
