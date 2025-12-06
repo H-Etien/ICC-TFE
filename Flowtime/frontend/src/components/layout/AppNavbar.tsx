@@ -10,8 +10,8 @@ import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 
 import SideMenuMobile from "./SideMenuMobile";
-import MenuButton from "./MenuButton";
-import ColorModeIconDropdown from "../styles/ColorModeIconDropdown";
+import MenuButton from "../menu/MenuButton";
+import ColorModeIconDropdown from "../../styles/ColorModeIconDropdown";
 
 const Toolbar = styled(MuiToolbar)({
     width: "100%",

@@ -16,11 +16,10 @@ const xThemeComponents = {
     ...treeViewCustomizations,
 };
 
-export default function Dashboard(props: { disableCustomTheme?: boolean }) {
+export default function Project(props: { disableCustomTheme?: boolean }) {
     return (
         <PageLayout {...props} themeComponents={xThemeComponents}>
             <Header />
-            <MainGrid />
         </PageLayout>
     );
 }

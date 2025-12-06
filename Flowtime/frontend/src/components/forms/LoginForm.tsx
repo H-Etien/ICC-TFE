@@ -26,8 +26,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { JSX } from "react";
 
-import api from "../api";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
+import api from "../../api";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
 
 type Props = { route: string; method: string };
 

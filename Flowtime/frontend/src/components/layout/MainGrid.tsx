@@ -3,15 +3,15 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
-import ChartUserByCountry from "./ChartUserByCountry";
-import CustomizedTreeView from "./CustomizedTreeView";
-import CustomizedDataGrid from "./CustomizedDataGrid";
-import HighlightedCard from "./HighlightedCard";
-import PageViewsBarChart from "./PageViewsBarChart";
-import SessionsChart from "./SessionsChart";
-import StatCard, { StatCardProps } from "./StatCard";
+import ChartUserByCountry from "../charts/ChartUserByCountry";
+import CustomizedTreeView from "../ui/CustomizedTreeView";
+import CustomizedDataGrid from "../data/CustomizedDataGrid";
+import HighlightedCard from "../ui/HighlightedCard";
+import PageViewsBarChart from "../charts/PageViewsBarChart";
+import SessionsChart from "../charts/SessionsChart";
+import StatCard, { StatCardProps } from "../ui/StatCard";
 
-import Copyright from "./Copyright";
+import Copyright from "../ui/Copyright";
 
 const data: StatCardProps[] = [
     {

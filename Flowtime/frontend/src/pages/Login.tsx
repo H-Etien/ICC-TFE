@@ -20,9 +20,9 @@ import {
     GoogleIcon,
     FacebookIcon,
     SitemarkIcon,
-} from "../components/CustomIcons";
+} from "../components/ui/CustomIcons";
 
-import LoginForm from "../components/LoginForm";
+import LoginForm from "../components/forms/LoginForm";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",

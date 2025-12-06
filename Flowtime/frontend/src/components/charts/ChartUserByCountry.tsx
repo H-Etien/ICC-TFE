@@ -11,7 +11,7 @@ import LinearProgress, {
     linearProgressClasses,
 } from "@mui/material/LinearProgress";
 
-import { IndiaFlag, UsaFlag, BrazilFlag, GlobeFlag } from "./CustomIcons";
+import { IndiaFlag, UsaFlag, BrazilFlag, GlobeFlag } from "../ui/CustomIcons";
 
 const data = [
     { label: "India", value: 50000 },

@@ -11,14 +11,16 @@ import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
+import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 
 import React from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 
 const mainListItems = [
     { text: "Home", icon: <HomeRoundedIcon />, to: "/" },
-    { text: "Analytics", icon: <AnalyticsRoundedIcon />, to: "/analytics" },
-    { text: "Clients", icon: <PeopleRoundedIcon />, to: "/clients" },
+    // { text: "Analytics", icon: <AnalyticsRoundedIcon />, to: "/analytics" },
+    // { text: "Clients", icon: <PeopleRoundedIcon />, to: "/clients" },
+    { text: "Projects", icon: <AddToPhotosIcon />, to: "/project" },
     { text: "Tasks", icon: <AssignmentRoundedIcon />, to: "/tasks" },
 ];
 
