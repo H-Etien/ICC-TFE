@@ -5,7 +5,6 @@ import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-
 import SelectContent from "./SelectContent";
 import MenuContent from "./MenuContent";
 import CardAlert from "./CardAlert";
@@ -53,6 +52,7 @@ export default function SideMenu() {
                     flexDirection: "column",
                 }}
             >
+                {/* Naviguer à travers les différentes applications */}
                 <MenuContent />
                 <CardAlert />
             </Box>
