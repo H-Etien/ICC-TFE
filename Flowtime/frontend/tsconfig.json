@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        //JS moderne 2020
+        "useDefineForClassFields": true,
+        "lib": ["DOM", "ESNext"],
+
+        // Plus besoin de react import a chaque fichier
+        "jsx": "react-jsx",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "baseUrl": ".",
+        "paths": {},
+
+        "allowJs": false
+    },
+
+    // Regarde uniquement dans le dossier src
+    "include": ["src"]
+}
