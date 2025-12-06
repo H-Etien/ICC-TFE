@@ -121,16 +121,8 @@ function RegisterForm({ route, method }: Props): JSX.Element {
                 password,
             });
 
-            if (method === "login") {
-                // Pour stocker les tokens dans le localStorage
-                localStorage.setItem(ACCESS_TOKEN, response.data.access);
-                localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
-
-                // Rediriger vers la page Home après la connexion
-                navigate("/");
-            } else {
-                navigate("/login");
-            }
+            // Si l'inscription est un succès, rediriger vers la page de connexion
+            navigate("/login");
         } catch (error: any) {
             console.error("Registration Error :", error);
 
