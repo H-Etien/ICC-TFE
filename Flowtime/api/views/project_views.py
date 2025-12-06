@@ -1,5 +1,6 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
 from django.contrib.auth.models import User
 from ..models import Project
 from ..serializers import ProjectSerializer
@@ -52,3 +53,11 @@ class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
         if member_ids:
             new_members = User.objects.filter(id__in=member_ids)
             project.members.add(*new_members)
+   
+    # Seul le propriétaire peut supprimer le projet 
+    def perform_destroy(self, instance):
+        user = self.request.user
+        if instance.owner != user and not user.is_staff:
+            raise PermissionDenied("Seul le propriétaire peut supprimer ce projet.")
+        # Sinon suppression normale (cascade sur Task si FK on_delete=CASCADE)
+        instance.delete()

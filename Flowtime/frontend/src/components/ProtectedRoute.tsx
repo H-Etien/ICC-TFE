@@ -47,7 +47,7 @@ function ProtectedRoute({ children }: Props): JSX.Element | null {
 
         // Pour vérifier si le token a expiré
         const decoded = jwtDecode<{ exp: number }>(token);
-        const TokenExpiration = decoded.exp * 1000;
+        const TokenExpiration = decoded.exp;
         const now = Date.now() / 1000;
 
         // Rafraichir le token s'il a expiré

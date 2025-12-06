@@ -42,8 +42,22 @@ function App() {
                     <Route path="/register" element={<RegisterAndLogout />} />
                     <Route path="/signin" element={<Register />} />
                     <Route path="/logout" element={<Logout />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/project" element={<Project />} />
+                    <Route
+                        path="/dashboard"
+                        element={
+                            <ProtectedRoute>
+                                <Dashboard />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/project"
+                        element={
+                            <ProtectedRoute>
+                                <Project />
+                            </ProtectedRoute>
+                        }
+                    />
 
                     <Route path="*" element={<NotFound />} />
                 </Routes>

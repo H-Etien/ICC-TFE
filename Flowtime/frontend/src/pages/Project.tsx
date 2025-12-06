@@ -1,5 +1,5 @@
 import Header from "../components/layout/Header";
-import MainGrid from "../components/layout/MainGrid";
+import ProjectGrid from "../components/layout/ProjectGrid";
 import {
     chartsCustomizations,
     dataGridCustomizations,
@@ -20,6 +20,7 @@ export default function Project(props: { disableCustomTheme?: boolean }) {
     return (
         <PageLayout {...props} themeComponents={xThemeComponents}>
             <Header />
+            <ProjectGrid />
         </PageLayout>
     );
 }
