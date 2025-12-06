@@ -139,7 +139,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
                             fontSize: "clamp(2rem, 10vw, 2.15rem)",
                         }}
                     >
-                        Sign in
+                        Connexion
                     </Typography>
                     <Box
                         component="form"
@@ -199,7 +199,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
                             variant="contained"
                             onClick={validateInputs}
                         >
-                            Sign in
+                            Connexion
                         </Button>
                         <Link
                             component="button"
@@ -238,11 +238,11 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
                         <Typography sx={{ textAlign: "center" }}>
                             Don&apos;t have an account?{" "}
                             <Link
-                                href="/material-ui/getting-started/templates/sign-in/"
+                                href="/register"
                                 variant="body2"
                                 sx={{ alignSelf: "center" }}
                             >
-                                Sign up
+                                Inscription
                             </Link>
                         </Typography>
                     </Box>

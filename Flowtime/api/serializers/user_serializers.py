@@ -4,6 +4,7 @@ from rest_framework.validators import UniqueValidator
 
 class UserSerializer(serializers.ModelSerializer):
     
+    # Erreurs qui seront renvoyées au frontend en cas de doublon
     username = serializers.CharField(
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all(), message="Ce nom d'utilisateur existe déjà.")]

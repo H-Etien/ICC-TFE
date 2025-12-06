@@ -85,10 +85,12 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
                     >
                         Inscription
                     </Typography>
+
                     <RegisterForm
                         route="/api/user/register/"
                         method="register"
                     />
+
                     <Divider>
                         <Typography sx={{ color: "text.secondary" }}>
                             or
