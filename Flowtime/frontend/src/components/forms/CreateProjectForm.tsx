@@ -1,19 +1,11 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import CloseIcon from "@mui/icons-material/Close";
 import Drawer from "@mui/material/Drawer";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import DoneIcon from "@mui/icons-material/Done";
 import Stack from "@mui/material/Stack";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -22,17 +14,35 @@ import { useTheme } from "@mui/material/styles";
 import { useState, useEffect } from "react";
 
 import useProjects from "../../hooks/useProjects";
+import { useNavigate } from "react-router-dom";
+import { create } from "node_modules/@mui/material/esm/styles/createTransitions";
 
 export default function CreateProjectForm({}) {
     const [open, setOpen] = useState(false);
     const { createProject } = useProjects();
+    const navigate = useNavigate();
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        createProject({
-            title: event.currentTarget.title.value,
-            description: event.currentTarget.description.value,
-        });
+
+        try {
+            const createdProject = await createProject({
+                title: event.currentTarget.title.value,
+                description: event.currentTarget.description.value,
+            });
+            setOpen(false);
+            if (createdProject && createdProject.id) {
+                navigate(`/project/${createdProject.id}`);
+                console.log("Project created with ID:", createdProject.id);
+            } else {
+                // Si erreur avec l'ID, redirige vers la page générale des projets
+                navigate(`/project`);
+                console.log("Error : Created project ID not found.");
+            }
+        } catch (error) {
+            console.error("Error creating project:", error);
+            return;
+        }
     };
 
     const [nameError, setNameError] = useState(false);
@@ -52,7 +62,7 @@ export default function CreateProjectForm({}) {
     return (
         <>
             <Button variant="contained" onClick={() => setOpen(true)}>
-                Ouvrir drawer
+                Créer un projet
             </Button>{" "}
             <Drawer
                 anchor="right"

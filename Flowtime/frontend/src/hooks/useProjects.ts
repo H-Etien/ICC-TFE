@@ -5,12 +5,14 @@ export default function useProjects() {
     const [projects, setProjects] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
+    const [selectedProject, setSelectedProject] = useState<any>(null);
+
     const getProjects = useCallback(async () => {
         setLoading(true);
 
         try {
-            const res = await api.get("/api/projects/");
-            setProjects(res.data);
+            const response = await api.get("/api/projects/");
+            setProjects(response.data);
         } catch (error: any) {
             console.error("getProjects error:", error);
         } finally {
@@ -18,14 +20,25 @@ export default function useProjects() {
         }
     }, []);
 
-    // create helper
+    const getProjectById = useCallback(async (id: number) => {
+        setLoading(true);
+        try {
+            const response = await api.get(`/api/projects/${id}/`);
+            setSelectedProject(response.data);
+            return response.data;
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
     const createProject = useCallback(
         async (payload: { title: string; description: string }) => {
             setLoading(true);
 
             try {
-                await api.post("/api/projects/", payload);
+                const response = await api.post("/api/projects/", payload);
                 await getProjects(); // Redonne la liste après création
+                return response.data;
             } catch (error: any) {
                 console.error("createProject error:", error);
             } finally {
@@ -35,7 +48,6 @@ export default function useProjects() {
         [getProjects]
     );
 
-    // delete helper
     const deleteProject = useCallback(
         async (id: number) => {
             setLoading(true);
@@ -63,5 +75,8 @@ export default function useProjects() {
         createProject,
         deleteProject,
         setProjects,
+        getProjectById,
+        selectedProject,
+        setSelectedProject,
     };
 }

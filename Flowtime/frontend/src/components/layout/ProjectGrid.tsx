@@ -10,8 +10,9 @@ import HighlightedCard from "../ui/HighlightedCard";
 import PageViewsBarChart from "../charts/PageViewsBarChart";
 import SessionsChart from "../charts/SessionsChart";
 import StatCard, { StatCardProps } from "../ui/StatCard";
-
 import Copyright from "../ui/Copyright";
+
+import getProjects from "../../hooks/useProjects";
 
 const data: StatCardProps[] = [
     {
