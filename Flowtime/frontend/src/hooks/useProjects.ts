@@ -13,6 +13,7 @@ export default function useProjects() {
         try {
             const response = await api.get("/api/projects/");
             setProjects(response.data);
+            return response.data;
         } catch (error: any) {
             console.error("getProjects error:", error);
         } finally {
