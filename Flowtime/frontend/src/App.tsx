@@ -11,7 +11,6 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
 import Project from "./pages/Project";
 
 function Logout() {
@@ -34,7 +33,7 @@ function App() {
                         path="/"
                         element={
                             <ProtectedRoute>
-                                <Dashboard />
+                                <Home />
                             </ProtectedRoute>
                         }
                     />
@@ -42,14 +41,14 @@ function App() {
                     <Route path="/register" element={<RegisterAndLogout />} />
                     <Route path="/signin" element={<Register />} />
                     <Route path="/logout" element={<Logout />} />
-                    <Route
+                    {/* <Route
                         path="/dashboard"
                         element={
                             <ProtectedRoute>
                                 <Dashboard />
                             </ProtectedRoute>
                         }
-                    />
+                    /> */}
                     <Route
                         path="/project"
                         element={

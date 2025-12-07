@@ -12,6 +12,7 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
 import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 import React from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
@@ -25,9 +26,9 @@ const mainListItems = [
 ];
 
 const secondaryListItems = [
-    { text: "Settings", icon: <SettingsRoundedIcon /> },
-    { text: "About", icon: <InfoRoundedIcon /> },
-    { text: "Feedback", icon: <HelpRoundedIcon /> },
+    { text: "Settings", icon: <SettingsRoundedIcon />, to: "/settings" },
+    { text: "About", icon: <InfoRoundedIcon />, to: "/about" },
+    { text: "Logout", icon: <LogoutIcon />, to: "/logout" },
 ];
 
 export default function MenuContent() {
@@ -59,7 +60,11 @@ export default function MenuContent() {
                         disablePadding
                         sx={{ display: "block" }}
                     >
-                        <ListItemButton>
+                        <ListItemButton
+                            component={RouterLink}
+                            to={item.to}
+                            selected={location.pathname === item.to}
+                        >
                             <ListItemIcon>{item.icon}</ListItemIcon>
                             <ListItemText primary={item.text} />
                         </ListItemButton>
