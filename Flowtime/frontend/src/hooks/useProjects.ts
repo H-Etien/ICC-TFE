@@ -20,12 +20,12 @@ export default function useProjects() {
 
     // create helper
     const createProject = useCallback(
-        async (payload: { title: string; description?: string }) => {
+        async (payload: { title: string; description: string }) => {
             setLoading(true);
 
             try {
                 await api.post("/api/projects/", payload);
-                await getProjects(); // refresh list after create
+                await getProjects(); // Redonne la liste après création
             } catch (error: any) {
                 console.error("createProject error:", error);
             } finally {
