@@ -19,7 +19,7 @@ const xThemeComponents = {
 export default function Project(props: { disableCustomTheme?: boolean }) {
     return (
         <PageLayout {...props} themeComponents={xThemeComponents}>
-            <Header />
+            <Header pageTitle="Project" />
             <ProjectGrid />
         </PageLayout>
     );

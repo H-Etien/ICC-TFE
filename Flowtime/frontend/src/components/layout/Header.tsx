@@ -8,7 +8,7 @@ import ColorModeIconDropdown from "../../styles/ColorModeIconDropdown";
 
 import Search from "../layout/Search";
 
-export default function Header() {
+export default function Header({ pageTitle }: { pageTitle: string }) {
     return (
         <Stack
             direction="row"
@@ -22,13 +22,13 @@ export default function Header() {
             }}
             spacing={2}
         >
-            <NavbarBreadcrumbs />
+            <NavbarBreadcrumbs pageTitle={pageTitle} />
             <Stack direction="row" sx={{ gap: 1 }}>
                 <Search />
-                <CustomDatePicker />
+                {/* <CustomDatePicker />
                 <MenuButton showBadge aria-label="Open notifications">
                     <NotificationsRoundedIcon />
-                </MenuButton>
+                </MenuButton> */}
                 <ColorModeIconDropdown />
             </Stack>
         </Stack>
