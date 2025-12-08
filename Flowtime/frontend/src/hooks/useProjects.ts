@@ -5,6 +5,7 @@ export default function useProjects() {
     const [projects, setProjects] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
+    // Pour stocker le projet sélectionné
     const [selectedProject, setSelectedProject] = useState<any>(null);
 
     const getProjects = useCallback(async () => {
@@ -75,9 +76,7 @@ export default function useProjects() {
         getProjects,
         createProject,
         deleteProject,
-        setProjects,
         getProjectById,
         selectedProject,
-        setSelectedProject,
     };
 }

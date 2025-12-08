@@ -13,13 +13,12 @@ import { useTheme } from "@mui/material/styles";
 
 import { useState, useEffect } from "react";
 
-import useProjects from "../../hooks/useProjects";
 import { useNavigate } from "react-router-dom";
-import { create } from "node_modules/@mui/material/esm/styles/createTransitions";
+import useTasks from "../../hooks/useTasks";
 
-export default function CreateProjectForm({}) {
+export default function CreateTaskForm({}) {
     const [open, setOpen] = useState(false);
-    const { createProject } = useProjects();
+    const { createTask } = useTasks();
     const navigate = useNavigate();
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -28,17 +27,20 @@ export default function CreateProjectForm({}) {
         const form = event.currentTarget;
         const data = new FormData(form);
         const title = String(data.get("title") || "");
-        const description = String(data.get("description") || "");
+        const content = String(data.get("description") || "");
 
         try {
-            const createdProject = await createProject({
-                title: title, // valueOf() pour avoir un string et pas un string object
-                description: description,
+            const createdTask = await createTask({
+                projectId: Number(event.currentTarget.projectId.value),
+                payload: {
+                    title: title, // valueOf() pour avoir un string et pas un string object
+                    content: content,
+                },
             });
             setOpen(false);
-            if (createdProject && createdProject.id) {
-                navigate(`/project/${createdProject.id}`);
-                console.log("Project created with ID:", createdProject.id);
+            if (createdTask && createdTask.id) {
+                navigate(`/project/${createdTask.id}`);
+                console.log("Project created with ID:", createdTask.id);
             } else {
                 // Si erreur avec l'ID, redirige vers la page générale des projets
                 navigate(`/project`);

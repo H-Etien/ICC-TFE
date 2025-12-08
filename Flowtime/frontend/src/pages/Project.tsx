@@ -1,3 +1,6 @@
+import Divider from "@mui/material/Divider";
+
+import CreateProjectForm from "../components/forms/CreateProjectForm";
 import Header from "../components/layout/Header";
 import ProjectGrid from "../components/layout/ProjectGrid";
 import {
@@ -20,6 +23,8 @@ export default function Project(props: { disableCustomTheme?: boolean }) {
     return (
         <PageLayout {...props} themeComponents={xThemeComponents}>
             <Header pageTitle="Project" />
+            <Divider />
+            <CreateProjectForm />
             <ProjectGrid />
         </PageLayout>
     );

@@ -12,6 +12,7 @@ import {
 
 import PageLayout from "../components/layout/PageLayout";
 import useProjects from "../hooks/useProjects";
+import useTasks from "../hooks/useTasks";
 
 const xThemeComponents = {
     ...chartsCustomizations,
@@ -23,21 +24,21 @@ const xThemeComponents = {
 export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
     const { id } = useParams<{ id: string }>();
     const { getProjectById, selectedProject } = useProjects();
-    const [project, setProject] = useState<any>(null);
+    const { getTasks } = useTasks();
 
     useEffect(() => {
         (async () => {
             if (!id) return;
 
             try {
-                // Pour avoir les détails du projet
-                await getProjectById(Number(id));
+                // Pour avoir les détails de la Task
+                await getTasks(Number(id));
             } catch (e) {
                 console.error(e);
             } finally {
             }
         })();
-    }, [id, getProjectById]);
+    }, [id, getTasks]);
 
     return (
         <PageLayout {...props} themeComponents={xThemeComponents}>
