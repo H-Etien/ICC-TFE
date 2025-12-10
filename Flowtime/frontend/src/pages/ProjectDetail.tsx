@@ -53,7 +53,7 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
         })();
     }, [id, getProjectById, getTasks]);
 
-    console.log("Selected Project:", selectedProject);
+    // console.log("Selected Project:", selectedProject);
 
     return (
         <PageLayout {...props} themeComponents={xThemeComponents}>

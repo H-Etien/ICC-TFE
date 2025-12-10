@@ -40,7 +40,6 @@ export default function CreateProjectForm({}) {
             setOpen(false);
             if (createdProject && createdProject.id) {
                 navigate(`/project/${createdProject.id}`);
-                console.log("Project created with ID:", createdProject.id);
             } else {
                 // Si erreur avec l'ID, redirige vers la page générale des projets
                 navigate(`/project`);

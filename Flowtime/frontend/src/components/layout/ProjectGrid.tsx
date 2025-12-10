@@ -118,9 +118,9 @@ export default function ProjectGrid() {
         return <div style={{ padding: 24 }}>Commencer à créer vos projets</div>;
     }
 
-    projects.map((project) => {
-        console.log("Project in ProjectGrid:", project);
-    });
+    // projects.map((project) => {
+    //     console.log("Project in ProjectGrid:", project);
+    // });
 
     return (
         <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
