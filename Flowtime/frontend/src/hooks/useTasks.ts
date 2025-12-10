@@ -42,5 +42,5 @@ export default function useTasks() {
         }
     };
 
-    return { tasks, getTasks, createTask };
+    return { tasks, setTasks, getTasks, createTask };
 }
