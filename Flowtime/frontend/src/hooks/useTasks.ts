@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import api from "../api";
 
 export default function useTasks() {
@@ -25,7 +25,7 @@ export default function useTasks() {
             payload,
         }: {
             projectId: number;
-            payload: { title: string; content: string };
+            payload: { title: string; content: string; assigned_to?: number };
         }) => {
             setLoading(true);
             try {
@@ -47,5 +47,6 @@ export default function useTasks() {
     return {
         getTasks,
         createTask,
+        tasks,
     };
 }

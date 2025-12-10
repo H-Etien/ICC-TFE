@@ -10,6 +10,18 @@ import {
     treeViewCustomizations,
 } from "../styles/customizations";
 
+import KanbanBoard from "../components/kanban/KanbanBoard";
+import Divider from "@mui/material/Divider";
+import CreateTaskForm from "../components/forms/CreateTaskForm";
+
+// Pour le drag and drop
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import {
+    SortableContext,
+    arrayMove,
+    verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+
 import PageLayout from "../components/layout/PageLayout";
 import useProjects from "../hooks/useProjects";
 import useTasks from "../hooks/useTasks";
@@ -24,25 +36,30 @@ const xThemeComponents = {
 export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
     const { id } = useParams<{ id: string }>();
     const { getProjectById, selectedProject } = useProjects();
-    const { getTasks } = useTasks();
+    const { getTasks, tasks } = useTasks();
 
     useEffect(() => {
         (async () => {
             if (!id) return;
 
             try {
-                // Pour avoir les détails de la Task
+                // Pour avoir les détails d'un projet spécifique avec ses Tasks
+                await getProjectById(Number(id));
                 await getTasks(Number(id));
             } catch (e) {
                 console.error(e);
             } finally {
             }
         })();
-    }, [id, getTasks]);
+    }, [id, getProjectById, getTasks]);
+
+    console.log("Selected Project:", selectedProject);
 
     return (
         <PageLayout {...props} themeComponents={xThemeComponents}>
             <Header pageTitle="Project" />
+            <Divider />
+            <CreateTaskForm projectId={ProjectID} />
             {selectedProject && (
                 <div>
                     <h2>{selectedProject.title}</h2>
@@ -51,7 +68,8 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
                 </div>
             )}
             <div>oqsidfjoqsidjf</div>
-            <ProjectGrid />"
+            <KanbanBoard tasks={tasks}></KanbanBoard>
+            <ProjectGrid />
         </PageLayout>
     );
 }

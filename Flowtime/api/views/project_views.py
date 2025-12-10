@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from ..models import Project
 from ..serializers import ProjectSerializer
 
+from ..permissions import IsProjectOwnerOrReadOnly
+
 """
 Pour lister tous les projets dont le user est membre 
 et pour en créer de nouveaux projets
@@ -37,7 +39,7 @@ Hérite de RetrieveUpdateDestroyAPIView → fournit trois fonctionnalités :
 """
 class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProjectSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProjectOwnerOrReadOnly]
     
     # Pour accéder à un projet particulier par son ID
     lookup_field = 'pk'

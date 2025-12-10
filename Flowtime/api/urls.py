@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from .views import UserCreateView, TaskListCreateView, ProjectListCreateView, ProjectDetailView
+from .views import UserCreateView, TaskListCreateView, ProjectListCreateView, ProjectDetailView, TaskDetailView
 
 
 
@@ -15,6 +15,7 @@ urlpatterns = [
     
     # Task
     path('projects/<int:project_pk>/tasks/', TaskListCreateView.as_view(), name='project_task_list_create'),
+    path('projects/<int:project_pk>/tasks/<int:pk>/', TaskDetailView.as_view(), name='project_task_detail'),
     
     # JWT Tokens pour l'authentification
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

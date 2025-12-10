@@ -18,7 +18,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useTasks from "../../hooks/useTasks";
 
-export default function CreateTaskForm({}) {
+export default function CreateTaskForm({
+    projectId,
+}: {
+    projectId: string | undefined;
+}) {
     const [open, setOpen] = useState(false);
     const { createTask } = useTasks();
     const navigate = useNavigate();
@@ -29,27 +33,20 @@ export default function CreateTaskForm({}) {
         const form = event.currentTarget;
         const data = new FormData(form);
         const title = String(data.get("title") || "");
-        const content = String(data.get("description") || "");
+        const content = String(data.get("content") || "");
+        const assignedTo = data.get("assigned_to"); // Peut être null
 
         try {
             const createdTask = await createTask({
-                projectId: Number(event.currentTarget.projectId.value),
+                projectId: Number(projectId),
                 payload: {
-                    title: title, // valueOf() pour avoir un string et pas un string object
+                    title: title,
                     content: content,
                 },
             });
             setOpen(false);
-            if (createdTask && createdTask.id) {
-                navigate(`/project/${createdTask.id}`);
-                console.log("Project created with ID:", createdTask.id);
-            } else {
-                // Si erreur avec l'ID, redirige vers la page générale des projets
-                navigate(`/project`);
-                console.log("Error : Created project ID not found.");
-            }
         } catch (error) {
-            console.error("Error creating project:", error);
+            console.error("Error creating task:", error);
             return;
         }
     };
@@ -71,7 +68,7 @@ export default function CreateTaskForm({}) {
     return (
         <>
             <Button variant="contained" onClick={() => setOpen(true)}>
-                Créer un projet
+                Créer une tâche
             </Button>{" "}
             <Drawer
                 anchor="right"
@@ -84,7 +81,7 @@ export default function CreateTaskForm({}) {
                 }}
             >
                 <div style={{ padding: 24 }}>
-                    <h2>Contenu du Drawer</h2>
+                    <h2>Créer une nouvelle tâche</h2>
                     <Box
                         component="form"
                         onSubmit={handleSubmit}
@@ -97,32 +94,45 @@ export default function CreateTaskForm({}) {
                         }}
                     >
                         <FormControl>
-                            <FormLabel htmlFor="title">Titre</FormLabel>
+                            <FormLabel htmlFor="title">
+                                Titre de la tâche
+                            </FormLabel>
                             <TextField
-                                autoComplete="title"
+                                autoComplete="off"
                                 name="title"
                                 required
                                 fullWidth
                                 id="title"
-                                placeholder="Mon projet incroyable"
+                                placeholder="Ex: Designer le logo"
                                 error={nameError}
                                 helperText={nameErrorMessage}
-                                color={nameError ? "error" : "primary"}
                             />
                         </FormControl>
 
                         <FormControl>
-                            <FormLabel htmlFor="description">
-                                Description
+                            <FormLabel htmlFor="content">Description</FormLabel>
+                            <TextField
+                                name="content"
+                                placeholder="Description de la tâche"
+                                id="content"
+                                required
+                                fullWidth
+                                multiline
+                                rows={4}
+                                sx={{ mt: 1 }}
+                                variant="outlined"
+                            />
+                        </FormControl>
+
+                        <FormControl>
+                            <FormLabel htmlFor="assigned_to">
+                                Assigner à (ID utilisateur, optionnel)
                             </FormLabel>
                             <TextField
-                                name="description"
-                                placeholder="Description du projet"
-                                type="text"
-                                id="description"
-                                autoComplete="description"
-                                autoFocus
-                                required
+                                name="assigned_to"
+                                placeholder="Ex: 1"
+                                type="number"
+                                id="assigned_to"
                                 fullWidth
                                 variant="outlined"
                             />
@@ -164,7 +174,6 @@ export default function CreateTaskForm({}) {
                         </Stack>
                     </Box>
                 </div>
-                {/* contenu : form, boutons, header */}
             </Drawer>
         </>
     );
