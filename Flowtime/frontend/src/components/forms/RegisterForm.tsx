@@ -1,44 +1,24 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { JSX } from "react";
-import react from "react";
 
 import api from "../../api";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
 
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormLabel from "@mui/material/FormLabel";
-import FormControl from "@mui/material/FormControl";
-import Link from "@mui/material/Link";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
-import MuiCard from "@mui/material/Card";
-import { styled } from "@mui/material/styles";
-import AppTheme from "../styles/AppTheme";
-import ColorModeSelect from "../styles/ColorModeSelect";
 import {
-    GoogleIcon,
-    FacebookIcon,
-    SitemarkIcon,
-} from "../components/CustomIcons";
+    Box,
+    Button,
+    FormControl,
+    FormLabel,
+    TextField,
+    FormControlLabel,
+    Checkbox,
+} from "@mui/material";
 
 type Props = { route: string; method: string };
 
 function RegisterForm({ route, method }: Props): JSX.Element {
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const navigate = useNavigate();
-
-    // Pour déterminer si le formulaire est pour la connexion ou l'inscription
-    const formMethod = method === "login" ? "Login" : "Register";
 
     const [emailError, setEmailError] = useState(false);
     const [emailErrorMessage, setEmailErrorMessage] = useState("");
