@@ -59,7 +59,7 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
         <PageLayout {...props} themeComponents={xThemeComponents}>
             <Header pageTitle="Project" />
             <Divider />
-            <CreateTaskForm projectId={ProjectID} />
+            <CreateTaskForm projectId={id} />
             {selectedProject && (
                 <div>
                     <h2>{selectedProject.title}</h2>
