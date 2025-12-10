@@ -36,7 +36,7 @@ const xThemeComponents = {
 export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
     const { id } = useParams<{ id: string }>();
     const { getProjectById, selectedProject } = useProjects();
-    const { getTasks, tasks } = useTasks();
+    const { getTasks, tasks, createTask } = useTasks();
 
     useEffect(() => {
         (async () => {
@@ -53,13 +53,13 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
         })();
     }, [id, getProjectById, getTasks]);
 
-    // console.log("Selected Project:", selectedProject);
+    console.log(`Tasks from hook in ProjectDetail ${id} :`, tasks);
 
     return (
         <PageLayout {...props} themeComponents={xThemeComponents}>
             <Header pageTitle="Project" />
             <Divider />
-            <CreateTaskForm projectId={id} />
+            <CreateTaskForm projectId={id} createTask={createTask} />
             {selectedProject && (
                 <div>
                     <h2>{selectedProject.title}</h2>

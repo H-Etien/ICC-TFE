@@ -19,34 +19,28 @@ export default function useTasks() {
         }
     }, []);
 
-    const createTask = useCallback(
-        async ({
-            projectId,
-            payload,
-        }: {
-            projectId: number;
-            payload: { title: string; content: string; assigned_to?: number };
-        }) => {
-            setLoading(true);
-            try {
-                const response = await api.post(
-                    `/api/projects/${projectId}/tasks/`,
-                    payload
-                );
-                await getTasks(projectId);
-                return response.data;
-            } catch (error: any) {
-                console.error("createTask error:", error);
-            } finally {
-                setLoading(false);
-            }
-        },
-        [getTasks]
-    );
+    const createTask = async ({
+        projectId,
+        payload,
+    }: {
+        projectId: number;
+        payload: { title: string; content: string; assigned_to?: number };
+    }) => {
+        try {
+            const response = await api.post(
+                `api/projects/${projectId}/tasks/`,
+                payload
+            );
+            const createdTask = response.data;
 
-    return {
-        getTasks,
-        createTask,
-        tasks,
+            // Avoir la nouvelle liste de Task sans recharger la page
+            setTasks((prevTasks) => [createdTask, ...prevTasks]);
+            return createdTask;
+        } catch (error) {
+            console.error("Failed to create task:", error);
+            throw error;
+        }
     };
+
+    return { tasks, getTasks, createTask };
 }

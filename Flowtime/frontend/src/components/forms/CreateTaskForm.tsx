@@ -16,15 +16,21 @@ import { useTheme } from "@mui/material/styles";
 import { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
-import useTasks from "../../hooks/useTasks";
 
 export default function CreateTaskForm({
     projectId,
+    createTask,
 }: {
     projectId: string | undefined;
+    createTask: ({
+        projectId,
+        payload,
+    }: {
+        projectId: number;
+        payload: { title: string; content: string; assigned_to?: number };
+    }) => Promise<any>;
 }) {
     const [open, setOpen] = useState(false);
-    const { createTask } = useTasks();
     const navigate = useNavigate();
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

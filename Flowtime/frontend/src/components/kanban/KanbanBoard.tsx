@@ -49,15 +49,26 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ tasks }) => {
     };
 
     return (
-        <Box sx={{ padding: 2, width: "100%" }}>
-            <Grid container spacing={2}>
+        <Box sx={{ padding: 6, width: "100%" }}>
+            <Grid
+                container
+                spacing={2}
+                sx={{
+                    justifyContent: "space-between",
+                    // alignItems: "center", // Enlevé pour permettre l'étirement (stretch) en largeur sur mobile
+                    display: "flex",
+                    flexDirection: { xs: "column", sm: "row" },
+                    gap: 2,
+                }}
+            >
                 {allStatuses.map((status) => (
-                    <Grid columns={{ xs: 12, md: 4 }} key={status}>
+                    <Grid item xs={12} md={4} key={status} size="grow">
+                        {/* Colonne avec Status */}
                         <Paper
                             sx={{
                                 minHeight: 500,
                                 padding: 1,
-                                backgroundColor: "#f0f2f5",
+                                backgroundColor: "#9cabc2ff",
                             }}
                         >
                             <Typography
@@ -72,6 +83,8 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ tasks }) => {
                             >
                                 {getColumnTitle(status)}
                             </Typography>
+
+                            {/* Liste de Task  */}
                             <Box
                                 sx={{
                                     display: "flex",
