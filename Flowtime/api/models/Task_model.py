@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from .Projet_model import Project
 
+
+
 class Task(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField(blank=True, null=True)
@@ -15,7 +17,15 @@ class Task(models.Model):
     end_time = models.DateTimeField(null=True, blank=True)
     
     is_completed = models.BooleanField(default=False)
- 
+
+    # Pour la vue kanban en 3 colonnes
+    task_status = [
+        ('todo', 'À faire'),
+        ('doing', 'En cours'),
+        ('done', 'Terminé'),
+    ]
+    status = models.CharField(max_length=10, choices=task_status, default='todo')
+
     # related_name pour accéder aux Task d'un utilisateur via user.tasks.all()
     #owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks')
 

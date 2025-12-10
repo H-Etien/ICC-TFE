@@ -11,6 +11,8 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
+import Project from "./pages/Project";
+import ProjectDetails from "./pages/ProjectDetail";
 
 function Logout() {
     // Pour supprimer les tokens du localStorage lors de la déconnexion
@@ -36,9 +38,28 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
+                    {/* Inscription et login */}
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<RegisterAndLogout />} />
                     <Route path="/signin" element={<Register />} />
+                    <Route path="/logout" element={<Logout />} />
+
+                    <Route
+                        path="/project"
+                        element={
+                            <ProtectedRoute>
+                                <Project />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/project/:id"
+                        element={
+                            <ProtectedRoute>
+                                <ProjectDetails />
+                            </ProtectedRoute>
+                        }
+                    />
 
                     <Route path="*" element={<NotFound />} />
                 </Routes>

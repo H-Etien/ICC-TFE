@@ -19,9 +19,9 @@ import {
     GoogleIcon,
     FacebookIcon,
     SitemarkIcon,
-} from "../components/CustomIcons";
+} from "../components/ui/CustomIcons";
 
-import RegisterForm from "../components/RegisterForm";
+import RegisterForm from "../components/forms/RegisterForm";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
