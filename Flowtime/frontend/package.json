@@ -22,7 +22,7 @@
     "@mui/material": "^7.3.6",
     "@mui/x-charts": "^8.21.0",
     "@mui/x-data-grid": "^8.21.0",
-    "@mui/x-date-pickers": "^8.21.0",
+    "@mui/x-date-pickers": "^8.22.0",
     "@mui/x-tree-view": "^8.21.0",
     "@react-spring/web": "^10.0.3",
     "axios": "^1.13.2",

@@ -4,6 +4,7 @@ import api from "../api";
 export default function useTasks() {
     const [tasks, setTasks] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const [selectedTask, setSelectedTask] = useState<any>(null);
 
     const getTasks = useCallback(async (projectId: number) => {
         setLoading(true);
@@ -18,6 +19,25 @@ export default function useTasks() {
             setLoading(false);
         }
     }, []);
+
+    const getTaskById = useCallback(
+        async (projectId: number, taskId: number) => {
+            setLoading(true);
+            try {
+                const response = await api.get(
+                    `/api/projects/${projectId}/tasks/${taskId}/`
+                );
+                setSelectedTask(response.data);
+                return response.data;
+            } catch (error) {
+                console.error("getTaskById error:", error);
+                setSelectedTask(null);
+            } finally {
+                setLoading(false);
+            }
+        },
+        []
+    );
 
     const createTask = async ({
         projectId,
@@ -42,5 +62,13 @@ export default function useTasks() {
         }
     };
 
-    return { tasks, setTasks, getTasks, createTask };
+    return {
+        tasks,
+        setTasks,
+        getTasks,
+        createTask,
+        getTaskById,
+        selectedTask,
+        loading,
+    };
 }
