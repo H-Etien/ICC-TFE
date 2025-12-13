@@ -59,12 +59,7 @@ export default function CreateTaskForm({
                     assigned_to: assignedTo ? Number(assignedTo) : undefined,
                 },
             });
-            console.log(
-                "Created task:",
-                startDate.toISOString(),
-                endDate.toISOString(),
-                createdTask
-            );
+
             setOpen(false);
         } catch (error) {
             console.error("Error creating task:", error);

@@ -53,7 +53,7 @@ class TaskListCreateView(generics.ListCreateAPIView):
 Pour récupérer, mettre à jour ou supprimer un Task en particulier
 
 Hérite de RetrieveUpdateDestroyAPIView → fournit trois fonctionnalités : 
-    1. Accéder à un Task (via pk).
+    1. Accéder à une Task (via pk).
     2. Mettre à jour ses informations.
     3. Supprimer la Task si besoin.
 """

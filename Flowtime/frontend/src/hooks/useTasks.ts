@@ -62,11 +62,25 @@ export default function useTasks() {
         }
     };
 
+    const deleteTask = async (projectId: number, taskId: number) => {
+        try {
+            await api.delete(`/api/projects/${projectId}/tasks/${taskId}/`);
+            // Mise à jour de la liste des Task pour retirer la Task supprimée
+            setTasks((prevTasks) =>
+                prevTasks.filter((task) => task.id !== taskId)
+            );
+        } catch (error) {
+            console.error("Failed to delete task:", error);
+            throw error;
+        }
+    };
+
     return {
         tasks,
         setTasks,
         getTasks,
         createTask,
+        deleteTask,
         getTaskById,
         selectedTask,
         loading,
