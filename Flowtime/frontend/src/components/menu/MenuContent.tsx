@@ -24,6 +24,11 @@ const mainListItems = [
     // { text: "Clients", icon: <PeopleRoundedIcon />, to: "/clients" },
     { text: "Projects", icon: <AddToPhotosIcon />, to: "/project" },
     { text: "Calendar", icon: <CalendarMonthIcon />, to: "/calendar" },
+    {
+        text: "AI Chat Generator",
+        icon: <AssignmentRoundedIcon />,
+        to: "/ai-generator",
+    },
 ];
 
 const secondaryListItems = [

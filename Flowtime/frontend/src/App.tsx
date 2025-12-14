@@ -15,6 +15,7 @@ import Project from "./pages/Project";
 import ProjectDetails from "./pages/ProjectDetail";
 import TaskDetail from "./pages/TaskDetail";
 import Calendar from "./pages/Calendar";
+import AIChatGenerator from "./pages/AIChatGenerator";
 
 function Logout() {
     // Pour supprimer les tokens du localStorage lors de la déconnexion
@@ -74,6 +75,14 @@ function App() {
                         element={
                             <ProtectedRoute>
                                 <Calendar />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/ai-generator"
+                        element={
+                            <ProtectedRoute>
+                                <AIChatGenerator />
                             </ProtectedRoute>
                         }
                     />
