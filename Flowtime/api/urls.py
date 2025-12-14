@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from .views import UserCreateView, TaskListCreateView, ProjectListCreateView, ProjectDetailView, TaskDetailView, UserAllTasksListView
+from .views import UserCreateView, TaskListCreateView, ProjectListCreateView, ProjectDetailView, TaskDetailView, UserAllTasksListView, AIProjectGeneratorView
 
 
 
@@ -21,4 +21,7 @@ urlpatterns = [
     # JWT Tokens pour l'authentification
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    # IA    
+    path('ai/generate_project/', AIProjectGeneratorView.as_view(), name='ai_generate_project'),
 ]
