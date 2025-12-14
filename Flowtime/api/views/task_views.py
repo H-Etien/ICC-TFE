@@ -73,3 +73,16 @@ class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
         # Retourne uniquement les tâches du projet spécifié (project_pk)
         # ET vérifie que l'utilisateur est bien membre de ce projet.
         return Task.objects.filter(project_id=project_pk, project__members=user)
+
+
+"""
+Pour lister toutes les tâches de tous les projets où l'utilisateur est membre.
+"""
+class UserAllTasksListView(generics.ListAPIView):
+    serializer_class = TaskSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        # Pour avoir toutes les Task d'un utilisateur
+        return Task.objects.filter(project__members=user).distinct()

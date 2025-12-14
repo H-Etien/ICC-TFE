@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from .views import UserCreateView, TaskListCreateView, ProjectListCreateView, ProjectDetailView, TaskDetailView
+from .views import UserCreateView, TaskListCreateView, ProjectListCreateView, ProjectDetailView, TaskDetailView, UserAllTasksListView
 
 
 
@@ -14,6 +14,7 @@ urlpatterns = [
     path('projects/<int:pk>/', ProjectDetailView.as_view(), name='project-detail'),
     
     # Task
+    path('tasks/all/', UserAllTasksListView.as_view(), name='user-all-tasks'), # Pour lister toutes les Tasks de l'utilisateur connecté
     path('projects/<int:project_pk>/tasks/', TaskListCreateView.as_view(), name='project_task_list_create'),
     path('projects/<int:project_pk>/tasks/<int:pk>/', TaskDetailView.as_view(), name='project_task_detail'),
     

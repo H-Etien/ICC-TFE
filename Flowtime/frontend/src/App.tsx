@@ -14,6 +14,7 @@ import Register from "./pages/Register";
 import Project from "./pages/Project";
 import ProjectDetails from "./pages/ProjectDetail";
 import TaskDetail from "./pages/TaskDetail";
+import Calendar from "./pages/Calendar";
 
 function Logout() {
     // Pour supprimer les tokens du localStorage lors de la déconnexion
@@ -65,6 +66,14 @@ function App() {
                         element={
                             <ProtectedRoute>
                                 <TaskDetail />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/calendar"
+                        element={
+                            <ProtectedRoute>
+                                <Calendar />
                             </ProtectedRoute>
                         }
                     />
