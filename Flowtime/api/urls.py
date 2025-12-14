@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from .views import UserCreateView, TaskListCreateView, ProjectListCreateView, ProjectDetailView, TaskDetailView, UserAllTasksListView, AIProjectGeneratorView
+from .views import UserCreateView, TaskListCreateView, ProjectListCreateView, ProjectDetailView, TaskDetailView, UserAllTasksListView, AIProjectGeneratorView, AIChatView
 
 
 
@@ -23,5 +23,6 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # IA    
+    path('ai/chat/', AIChatView.as_view(), name='ai_chat'),
     path('ai/generate_project/', AIProjectGeneratorView.as_view(), name='ai_generate_project'),
 ]

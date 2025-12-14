@@ -46,6 +46,7 @@ class AIProjectGeneratorView(APIView):
                 generated_data = generate_project_from_conversation(prompt)
                 
                 project_title = generated_data.get("project_title") 
+                project_description = generated_data.get("project_description", "Projet généré par IA.")
                 generated_tasks = generated_data.get("tasks") 
 
                 if not project_title or not generated_tasks:
@@ -55,7 +56,7 @@ class AIProjectGeneratorView(APIView):
                 new_project = Project.objects.create(
                     title=project_title,
                     owner=request.user,
-                    description=f"Projet généré par IA."
+                    description=project_description
                 )
                 new_project.members.add(request.user)
 
