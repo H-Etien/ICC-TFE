@@ -40,15 +40,19 @@ export default function SideMenu() {
                 },
             }}
         >
-            <Box
+            <Typography
+                variant="body2"
                 sx={{
-                    display: "flex",
-                    mt: "calc(var(--template-frame-height, 0px) + 4px)",
-                    p: 1.5,
+                    fontWeight: 500,
+                    lineHeight: "16px",
+                    p: 2,
+                    textAlign: "center",
+                    fontSize: 18,
+                    fontWeight: "bold",
                 }}
             >
-                <SelectContent />
-            </Box>
+                Flowtime
+            </Typography>
             <Divider />
             <Box
                 sx={{

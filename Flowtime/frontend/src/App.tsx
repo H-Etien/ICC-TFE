@@ -17,6 +17,7 @@ import TaskDetail from "./pages/TaskDetail";
 import Calendar from "./pages/Calendar";
 import AIChatGenerator from "./pages/AIChatGenerator";
 import About from "./pages/About";
+import Settings from "./pages/Settings";
 import GDPRBanner from "./components/ui/GDPRBanner";
 
 function Logout() {
@@ -94,6 +95,14 @@ function App() {
                         element={
                             <ProtectedRoute>
                                 <About />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/settings"
+                        element={
+                            <ProtectedRoute>
+                                <Settings />
                             </ProtectedRoute>
                         }
                     />

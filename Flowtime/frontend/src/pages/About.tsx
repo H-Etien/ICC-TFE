@@ -13,7 +13,7 @@ import Header from "../components/layout/Header";
 export default function About(props: { disableCustomTheme?: boolean }) {
     return (
         <PageLayout {...props}>
-            <Header pageTitle="À propos" />
+            <Header pageTitle="About" />
             <Divider sx={{ my: 2 }} />
 
             <Container maxWidth="md">
