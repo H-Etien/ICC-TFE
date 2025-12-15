@@ -15,6 +15,8 @@ import CreateProjectForm from "../components/forms/CreateProjectForm";
 import PageLayout from "../components/layout/PageLayout";
 import useProjects from "../hooks/useProjects";
 
+import { useTranslation } from "react-i18next";
+
 import api from "../api";
 
 const xThemeComponents = {
@@ -25,6 +27,7 @@ const xThemeComponents = {
 };
 
 export default function Home(props: { disableCustomTheme?: boolean }) {
+    const { t } = useTranslation();
     const { projects, loading, getProjects, createProject, deleteProject } =
         useProjects();
 
@@ -37,7 +40,7 @@ export default function Home(props: { disableCustomTheme?: boolean }) {
 
     return (
         <PageLayout {...props} themeComponents={xThemeComponents}>
-            <Header pageTitle="Home" />
+            <Header pageTitle={t("home.title")} />
             <Divider />
             <CreateProjectForm />
             <HomeGrid />

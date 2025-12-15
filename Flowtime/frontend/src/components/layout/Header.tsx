@@ -5,6 +5,7 @@ import CustomDatePicker from "../ui/CustomDatePicker";
 import NavbarBreadcrumbs from "../layout/NavbarBreadcrumbs";
 import MenuButton from "../menu/MenuButton";
 import ColorModeIconDropdown from "../../styles/ColorModeIconDropdown";
+import LanguageSwitcher from "../LanguageSwitch";
 
 import Search from "../layout/Search";
 
@@ -24,11 +25,12 @@ export default function Header({ pageTitle }: { pageTitle: string }) {
         >
             <NavbarBreadcrumbs pageTitle={pageTitle} />
             <Stack direction="row" sx={{ gap: 1 }}>
-                <Search />
+                {/* <Search /> */}
                 {/* <CustomDatePicker />
                 <MenuButton showBadge aria-label="Open notifications">
                     <NotificationsRoundedIcon />
                 </MenuButton> */}
+                <LanguageSwitcher />
                 <ColorModeIconDropdown />
             </Stack>
         </Stack>

@@ -17,27 +17,45 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 import React from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
-
-const mainListItems = [
-    { text: "Home", icon: <HomeRoundedIcon />, to: "/" },
-    // { text: "Analytics", icon: <AnalyticsRoundedIcon />, to: "/analytics" },
-    // { text: "Clients", icon: <PeopleRoundedIcon />, to: "/clients" },
-    { text: "Projects", icon: <AddToPhotosIcon />, to: "/project" },
-    { text: "Calendar", icon: <CalendarMonthIcon />, to: "/calendar" },
-    {
-        text: "AI Chat Generator",
-        icon: <AssignmentRoundedIcon />,
-        to: "/ai-generator",
-    },
-];
-
-const secondaryListItems = [
-    { text: "Settings", icon: <SettingsRoundedIcon />, to: "/settings" },
-    { text: "About", icon: <InfoRoundedIcon />, to: "/about" },
-    { text: "Logout", icon: <LogoutIcon />, to: "/logout" },
-];
+import { useTranslation } from "react-i18next";
 
 export default function MenuContent() {
+    const { t } = useTranslation();
+    const location = useLocation();
+
+    const mainListItems = [
+        { text: t("navigation.home"), icon: <HomeRoundedIcon />, to: "/" },
+        {
+            text: t("navigation.projects"),
+            icon: <AddToPhotosIcon />,
+            to: "/project",
+        },
+        {
+            text: t("navigation.calendar"),
+            icon: <CalendarMonthIcon />,
+            to: "/calendar",
+        },
+        {
+            text: t("navigation.ai_generator"),
+            icon: <AssignmentRoundedIcon />,
+            to: "/ai-generator",
+        },
+    ];
+
+    const secondaryListItems = [
+        {
+            text: t("navigation.settings"),
+            icon: <SettingsRoundedIcon />,
+            to: "/settings",
+        },
+        {
+            text: t("navigation.about"),
+            icon: <InfoRoundedIcon />,
+            to: "/about",
+        },
+        { text: t("navigation.logout"), icon: <LogoutIcon />, to: "/logout" },
+    ];
+
     return (
         <Stack sx={{ flexGrow: 1, p: 1, justifyContent: "space-between" }}>
             <List dense>
@@ -48,7 +66,6 @@ export default function MenuContent() {
                         sx={{ display: "block" }}
                     >
                         <ListItemButton
-                            // Pour naviguer dans les différents liens sans recharger la page
                             component={RouterLink}
                             to={item.to}
                             selected={location.pathname === item.to}

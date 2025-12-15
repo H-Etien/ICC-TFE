@@ -1,0 +1,37 @@
+{
+    "navigation": {
+        "home": "Accueil",
+        "projects": "Projets",
+        "calendar": "Calendrier",
+        "ai_generator": "Générateur IA",
+        "settings": "Paramètres",
+        "about": "À propos",
+        "logout": "Déconnexion"
+    },
+    "home": {
+        "title": "Tableau de bord"
+    },
+    "project": {
+        "create_project": "Créer un projet",
+        "project_title": "Titre du projet",
+        "project_description": "Description du projet",
+        "title": "Projets",
+        "no_projects": "Aucun projet trouvé",
+        "delete": "Supprimer",
+        "edit": "Modifier"
+    },
+    "task": {
+        "title": "Tâches",
+        "add_task": "Ajouter une tâche",
+        "status": "Statut",
+        "delete": "Supprimer",
+        "edit": "Modifier"
+    },
+    "common": {
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "loading": "Chargement...",
+        "error": "Une erreur s'est produite"
+    }
+}

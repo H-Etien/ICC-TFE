@@ -14,12 +14,14 @@ import DoneIcon from "@mui/icons-material/Done";
 import { useTheme } from "@mui/material/styles";
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 import useProjects from "../../hooks/useProjects";
 import { useNavigate } from "react-router-dom";
 import { create } from "node_modules/@mui/material/esm/styles/createTransitions";
 
 export default function CreateProjectForm({}) {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const { createProject } = useProjects();
     const navigate = useNavigate();
@@ -68,7 +70,7 @@ export default function CreateProjectForm({}) {
     return (
         <>
             <Button variant="contained" onClick={() => setOpen(true)}>
-                Créer un projet
+                {t("project.create_project")}
             </Button>{" "}
             <Drawer
                 anchor="right"
@@ -81,7 +83,7 @@ export default function CreateProjectForm({}) {
                 }}
             >
                 <div style={{ padding: 24 }}>
-                    <h2>Contenu du Drawer</h2>
+                    <h2>{t("project.create_project")}</h2>
                     <Box
                         component="form"
                         onSubmit={handleSubmit}
@@ -94,14 +96,16 @@ export default function CreateProjectForm({}) {
                         }}
                     >
                         <FormControl>
-                            <FormLabel htmlFor="title">Titre</FormLabel>
+                            <FormLabel htmlFor="title">
+                                {t("project.project_title")}
+                            </FormLabel>
                             <TextField
                                 autoComplete="title"
                                 name="title"
                                 required
                                 fullWidth
                                 id="title"
-                                placeholder="Mon projet incroyable"
+                                placeholder={t("project.project_title")}
                                 error={nameError}
                                 helperText={nameErrorMessage}
                                 color={nameError ? "error" : "primary"}
@@ -110,11 +114,11 @@ export default function CreateProjectForm({}) {
 
                         <FormControl>
                             <FormLabel htmlFor="description">
-                                Description
+                                {t("project.project_description")}
                             </FormLabel>
                             <TextField
                                 name="description"
-                                placeholder="Description du projet"
+                                placeholder={t("project.project_description")}
                                 type="text"
                                 id="description"
                                 autoComplete="description"
@@ -129,6 +133,7 @@ export default function CreateProjectForm({}) {
                             <Button
                                 variant="outlined"
                                 onClick={() => setOpen(false)}
+                                title={t("common.cancel")}
                                 sx={{
                                     minWidth: 0,
                                     width: 40,
@@ -145,6 +150,7 @@ export default function CreateProjectForm({}) {
                             <Button
                                 type="submit"
                                 variant="outlined"
+                                title={t("common.save")}
                                 sx={{
                                     minWidth: 0,
                                     width: 40,

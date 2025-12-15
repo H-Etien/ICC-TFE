@@ -1,0 +1,37 @@
+{
+    "navigation": {
+        "home": "Home",
+        "projects": "Projects",
+        "calendar": "Calendar",
+        "ai_generator": "AI Generator",
+        "settings": "Settings",
+        "about": "About",
+        "logout": "Logout"
+    },
+    "home": {
+        "title": "Dashboard"
+    },
+    "project": {
+        "create_project": "Create Project",
+        "project_title": "Project Title",
+        "project_description": "Project Description",
+        "title": "Projects",
+        "no_projects": "No projects found",
+        "delete": "Delete",
+        "edit": "Edit"
+    },
+    "task": {
+        "title": "Tasks",
+        "add_task": "Add Task",
+        "status": "Status",
+        "delete": "Delete",
+        "edit": "Edit"
+    },
+    "common": {
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "loading": "Loading...",
+        "error": "An error occurred"
+    }
+}
