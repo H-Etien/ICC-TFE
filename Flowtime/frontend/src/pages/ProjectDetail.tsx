@@ -169,22 +169,6 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
         }
     };
 
-    // Gère la suppression après confirmation
-    const handleConfirmDelete = async () => {
-        if (!id) return;
-
-        setIsDeleting(true);
-        try {
-            await api.delete(`/api/projects/${id}/`);
-            closeConfirmDialog();
-            navigate("/"); // Rediriger vers la page d'accueil après la suppression
-        } catch (error) {
-            console.error("Error delete project", error);
-        } finally {
-            setIsDeleting(false);
-        }
-    };
-
     return (
         <PageLayout {...props} themeComponents={xThemeComponents}>
             <Header pageTitle="Project" />
