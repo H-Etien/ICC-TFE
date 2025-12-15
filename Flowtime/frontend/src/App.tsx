@@ -16,6 +16,8 @@ import ProjectDetails from "./pages/ProjectDetail";
 import TaskDetail from "./pages/TaskDetail";
 import Calendar from "./pages/Calendar";
 import AIChatGenerator from "./pages/AIChatGenerator";
+import About from "./pages/About";
+import GDPRBanner from "./components/ui/GDPRBanner";
 
 function Logout() {
     // Pour supprimer les tokens du localStorage lors de la déconnexion
@@ -32,6 +34,7 @@ function App() {
     return (
         <>
             <Router>
+                <GDPRBanner />
                 <Routes>
                     <Route
                         path="/"
@@ -83,6 +86,14 @@ function App() {
                         element={
                             <ProtectedRoute>
                                 <AIChatGenerator />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/about"
+                        element={
+                            <ProtectedRoute>
+                                <About />
                             </ProtectedRoute>
                         }
                     />

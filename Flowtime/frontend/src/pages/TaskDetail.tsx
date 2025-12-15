@@ -152,7 +152,7 @@ export default function TaskDetail(props: { disableCustomTheme?: boolean }) {
 
     return (
         <PageLayout {...props}>
-            <Card sx={{ width: "100%", maxWidth: 800, mt: 4 }}>
+            <Card sx={{ width: "100%", maxWidth: 800, mt: 2 }}>
                 <CardContent>
                     {isEditing ? (
                         <Box display="flex" flexDirection="column" gap={2}>
@@ -244,9 +244,7 @@ export default function TaskDetail(props: { disableCustomTheme?: boolean }) {
                             <Typography variant="body1" paragraph>
                                 {selectedTask.content || "Pas de description."}
                             </Typography>
-                            <Typography variant="subtitle2">
-                                Statut: {selectedTask.status}
-                            </Typography>
+
                             <Button
                                 variant="contained"
                                 onClick={() => setIsEditing(true)}
