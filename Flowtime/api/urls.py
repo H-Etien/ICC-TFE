@@ -1,13 +1,14 @@
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from .views import UserCreateView, TaskListCreateView, ProjectListCreateView, ProjectDetailView, TaskDetailView, UserAllTasksListView, AIProjectGeneratorView, AIChatView
+from .views import UserCreateView, UserDetailView, TaskListCreateView, ProjectListCreateView, ProjectDetailView, TaskDetailView, UserAllTasksListView, AIProjectGeneratorView, AIChatView
 
 
 
 urlpatterns = [
-    # User création
+    # User création et récupération
     path('user/register/', UserCreateView.as_view(), name='user_create'),
+    path('user/me/', UserDetailView.as_view(), name='user_detail'),
     
     # Project 
     path('projects/', ProjectListCreateView.as_view(), name='project_list_create'),
