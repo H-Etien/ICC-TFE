@@ -55,6 +55,8 @@ SIMPLEJWT = {
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -66,6 +68,13 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
 ]
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Mon site TFE",
+    "site_header": "Mon TFE Admin",
+    "site_brand": "FlowTime",
+    "show_ui_builder": True,
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
