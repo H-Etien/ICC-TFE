@@ -5,15 +5,16 @@ import LanguageIcon from "@mui/icons-material/Language";
 
 export default function LanguageSwitcher() {
     const { i18n } = useTranslation();
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
+    const [elementToTranslate, setElementToTranslate] =
+        React.useState<null | HTMLElement>(null);
+    const open = Boolean(elementToTranslate);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
+        setElementToTranslate(event.currentTarget);
     };
 
     const handleClose = () => {
-        setAnchorEl(null);
+        setElementToTranslate(null);
     };
 
     const handleLanguageChange = (lang: string) => {
@@ -26,11 +27,20 @@ export default function LanguageSwitcher() {
             <IconButton
                 aria-label="language"
                 onClick={handleClick}
+                disableRipple
                 sx={{ borderColor: "transparent" }}
+                size="small"
+                aria-controls={open ? "color-scheme-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
             >
                 <LanguageIcon />
             </IconButton>
-            <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+            <Menu
+                anchorEl={elementToTranslate}
+                open={open}
+                onClose={handleClose}
+            >
                 <MenuItem
                     selected={i18n.language === "fr"}
                     onClick={() => handleLanguageChange("fr")}

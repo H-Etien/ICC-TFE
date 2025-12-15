@@ -30,8 +30,8 @@ export default function Header({ pageTitle }: { pageTitle: string }) {
                 <MenuButton showBadge aria-label="Open notifications">
                     <NotificationsRoundedIcon />
                 </MenuButton> */}
-                <LanguageSwitcher />
                 <ColorModeIconDropdown />
+                <LanguageSwitcher />
             </Stack>
         </Stack>
     );

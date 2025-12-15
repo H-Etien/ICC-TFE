@@ -27,6 +27,16 @@ class ProjectListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         project = serializer.save(owner=self.request.user)
         project.members.add(self.request.user)  # Ajouter le créateur comme membre du projet
+        
+        # Ajouter les autres membres si fournis
+        members_ids = self.request.data.get('members', [])
+        if members_ids:
+            for member_id in members_ids:
+                try:
+                    member = User.objects.get(id=member_id)
+                    project.members.add(member)
+                except User.DoesNotExist:
+                    pass  # Ignorer si l'utilisateur n'existe pas
 
 
 """" 

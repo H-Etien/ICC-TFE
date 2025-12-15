@@ -4,6 +4,8 @@ from rest_framework import generics, status
 from ..serializers import UserSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from django.db.models import Q
 
 # Create your views here.
 
@@ -55,3 +57,20 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
             {'message': 'Compte supprimé avec succès'},
             status=status.HTTP_204_NO_CONTENT
         )
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def UserSearchView(request):
+    query = request.query_params.get('search', '')
+    
+    if len(query) < 2:
+        return Response([], status=status.HTTP_200_OK)
+    
+    # Chercher les utilisateurs qui contiennent la query dans leur username
+    # Exclure l'utilisateur connecté
+    users = User.objects.filter(
+        username__icontains=query
+    ).exclude(id=request.user.id).values('id', 'username', 'email')[:10]
+    
+    return Response(list(users), status=status.HTTP_200_OK)
