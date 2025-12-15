@@ -11,7 +11,7 @@ from ..models import Project
 
 from ..serializers import TaskSerializer
 from ..models import Task
-from ..services.icalendar_service import export_tasks_by_project, export_user_tasks
+from ..services.icalendar_service import export_tasks_by_project
 
 """
 Pour lister tous les Task dont le user est membre 
@@ -113,20 +113,4 @@ class TaskExportProjectView(generics.GenericAPIView):
         # Retourner le fichier en download
         response = HttpResponse(ics_content, content_type='text/calendar')
         response['Content-Disposition'] = f'attachment; filename="{project.title}_tasks.ics"'
-        return response
-
-
-"""
-Pour exporter toutes les tâches assignées à l'utilisateur en format .ics
-"""
-class TaskExportUserView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
-    
-    def get(self, request):
-        # Générer le fichier .ics avec toutes les tâches de l'utilisateur
-        ics_content = export_user_tasks(request.user)
-        
-        # Retourner le fichier en download
-        response = HttpResponse(ics_content, content_type='text/calendar')
-        response['Content-Disposition'] = f'attachment; filename="my_tasks.ics"'
         return response

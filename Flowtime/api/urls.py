@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from .views import UserCreateView, UserDetailView, UserSearchView, TaskListCreateView, ProjectListCreateView, ProjectDetailView, TaskDetailView, UserAllTasksListView, AIProjectGeneratorView, AIChatView, TaskExportProjectView, TaskExportUserView
+from .views import UserCreateView, UserDetailView, UserSearchView, TaskListCreateView, ProjectListCreateView, ProjectDetailView, TaskDetailView, UserAllTasksListView, AIProjectGeneratorView, AIChatView, TaskExportProjectView
 
 
 
@@ -20,9 +20,8 @@ urlpatterns = [
     path('projects/<int:project_pk>/tasks/', TaskListCreateView.as_view(), name='project_task_list_create'),
     path('projects/<int:project_pk>/tasks/<int:pk>/', TaskDetailView.as_view(), name='project_task_detail'),
     
-    # Task Export
-    path('tasks/export/', TaskExportUserView.as_view(), name='task_export_user'),  # Export mes tasks
-    path('projects/<int:project_pk>/tasks/export/', TaskExportProjectView.as_view(), name='task_export_project'),  # Export tasks du projet
+    # Task Export vers Google Calendar
+    path('projects/<int:project_pk>/tasks/export/', TaskExportProjectView.as_view(), name='task_export_project'),  
     
     # JWT Tokens pour l'authentification
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

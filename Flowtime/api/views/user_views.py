@@ -67,7 +67,7 @@ def UserSearchView(request):
     if len(query) < 2:
         return Response([], status=status.HTTP_200_OK)
     
-    # Chercher les utilisateurs qui contiennent la query dans leur username
+    # Cherche les utilisateurs qui contiennent la query dans leur username
     # Exclure l'utilisateur connecté
     users = User.objects.filter(
         username__icontains=query
