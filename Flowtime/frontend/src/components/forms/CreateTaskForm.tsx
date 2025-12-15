@@ -8,10 +8,15 @@ import {
     TextField,
     Stack,
     useMediaQuery,
+    TextareaAutosize,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DoneIcon from "@mui/icons-material/Done";
 import { useTheme } from "@mui/material/styles";
+
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 
 import { useState, useEffect } from "react";
 
@@ -42,14 +47,19 @@ export default function CreateTaskForm({
         const content = String(data.get("content") || "");
         const assignedTo = data.get("assigned_to"); // Peut être null
 
+        // Envoyer la requête pour créer la Task
         try {
             const createdTask = await createTask({
                 projectId: Number(projectId),
                 payload: {
                     title: title,
                     content: content,
+                    start_time: startDate ? startDate.toISOString() : undefined,
+                    end_time: endDate ? endDate.toISOString() : undefined,
+                    assigned_to: assignedTo ? Number(assignedTo) : undefined,
                 },
             });
+
             setOpen(false);
         } catch (error) {
             console.error("Error creating task:", error);
@@ -64,6 +74,9 @@ export default function CreateTaskForm({
     const theme = useTheme();
     const isMobileScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
+    const [startDate, setStartDate] = useState<Dayjs | null>(null);
+    const [endDate, setEndDate] = useState<Dayjs | null>(null);
+
     useEffect(() => {
         if (open === true) {
             setNameError(false);
@@ -75,7 +88,7 @@ export default function CreateTaskForm({
         <>
             <Button variant="contained" onClick={() => setOpen(true)}>
                 Créer une tâche
-            </Button>{" "}
+            </Button>
             <Drawer
                 anchor="right"
                 open={open}
@@ -109,7 +122,7 @@ export default function CreateTaskForm({
                                 required
                                 fullWidth
                                 id="title"
-                                placeholder="Ex: Designer le logo"
+                                placeholder="Ex: Commencer un programme"
                                 error={nameError}
                                 helperText={nameErrorMessage}
                             />
@@ -117,16 +130,23 @@ export default function CreateTaskForm({
 
                         <FormControl>
                             <FormLabel htmlFor="content">Description</FormLabel>
-                            <TextField
+                            <TextareaAutosize
                                 name="content"
-                                placeholder="Description de la tâche"
                                 id="content"
                                 required
-                                fullWidth
-                                multiline
-                                rows={4}
-                                sx={{ mt: 1 }}
-                                variant="outlined"
+                                minRows={4}
+                                maxRows={8}
+                                placeholder="Description de la tâche"
+                                style={{
+                                    // pour avoir le même style que les TextField de MUI
+                                    width: "100%",
+                                    boxSizing: "border-box",
+                                    borderRadius: 4,
+                                    fontFamily:
+                                        "Roboto, Helvetica, Arial, sans-serif",
+                                    fontSize: "0.875rem",
+                                }}
+                                aria-label="Description de la tâche"
                             />
                         </FormControl>
 
@@ -144,6 +164,45 @@ export default function CreateTaskForm({
                             />
                         </FormControl>
 
+                        {/* Date et heure (optionnel)  */}
+                        <LocalizationProvider
+                            dateAdapter={AdapterDayjs}
+                            adapterslocale="fr"
+                        >
+                            <Stack spacing={2}>
+                                <DateTimePicker
+                                    label="Date de début (optionnel)"
+                                    ampm={false}
+                                    format="DD/MM/YYYY HH:mm"
+                                    minutesStep={5}
+                                    onChange={(newValue) =>
+                                        setStartDate(newValue)
+                                    }
+                                    value={startDate}
+                                />
+                                <DateTimePicker
+                                    label="Date de fin (optionnel)"
+                                    ampm={false}
+                                    format="DD/MM/YYYY HH:mm"
+                                    minutesStep={5}
+                                    onChange={(newValue) =>
+                                        setEndDate(newValue)
+                                    }
+                                    value={endDate}
+                                />
+                                <Button
+                                    variant="outlined"
+                                    onClick={() => {
+                                        setStartDate(null);
+                                        setEndDate(null);
+                                    }}
+                                >
+                                    Supprimer la date
+                                </Button>
+                            </Stack>
+                        </LocalizationProvider>
+
+                        {/* Confirmer ou annuler la création de la Task */}
                         <Stack direction="row" spacing={2}>
                             <Button
                                 variant="outlined"

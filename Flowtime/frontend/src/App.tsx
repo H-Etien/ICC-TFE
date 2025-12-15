@@ -13,6 +13,9 @@ import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
 import Project from "./pages/Project";
 import ProjectDetails from "./pages/ProjectDetail";
+import TaskDetail from "./pages/TaskDetail";
+import Calendar from "./pages/Calendar";
+import AIChatGenerator from "./pages/AIChatGenerator";
 
 function Logout() {
     // Pour supprimer les tokens du localStorage lors de la déconnexion
@@ -43,7 +46,6 @@ function App() {
                     <Route path="/register" element={<RegisterAndLogout />} />
                     <Route path="/signin" element={<Register />} />
                     <Route path="/logout" element={<Logout />} />
-
                     <Route
                         path="/project"
                         element={
@@ -59,8 +61,31 @@ function App() {
                                 <ProjectDetails />
                             </ProtectedRoute>
                         }
+                    />{" "}
+                    <Route
+                        path="/project/:projectId/task/:taskId"
+                        element={
+                            <ProtectedRoute>
+                                <TaskDetail />
+                            </ProtectedRoute>
+                        }
                     />
-
+                    <Route
+                        path="/calendar"
+                        element={
+                            <ProtectedRoute>
+                                <Calendar />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/ai-generator"
+                        element={
+                            <ProtectedRoute>
+                                <AIChatGenerator />
+                            </ProtectedRoute>
+                        }
+                    />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </Router>

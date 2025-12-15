@@ -13,6 +13,7 @@ import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
 import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 import LogoutIcon from "@mui/icons-material/Logout";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 import React from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
@@ -22,7 +23,12 @@ const mainListItems = [
     // { text: "Analytics", icon: <AnalyticsRoundedIcon />, to: "/analytics" },
     // { text: "Clients", icon: <PeopleRoundedIcon />, to: "/clients" },
     { text: "Projects", icon: <AddToPhotosIcon />, to: "/project" },
-    { text: "Tasks", icon: <AssignmentRoundedIcon />, to: "/tasks" },
+    { text: "Calendar", icon: <CalendarMonthIcon />, to: "/calendar" },
+    {
+        text: "AI Chat Generator",
+        icon: <AssignmentRoundedIcon />,
+        to: "/ai-generator",
+    },
 ];
 
 const secondaryListItems = [

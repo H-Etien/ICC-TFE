@@ -4,7 +4,9 @@ import api from "../api";
 export default function useTasks() {
     const [tasks, setTasks] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const [selectedTask, setSelectedTask] = useState<any>(null);
 
+    // Pour récupérer les Tasks d'un projet spécifique
     const getTasks = useCallback(async (projectId: number) => {
         setLoading(true);
 
@@ -14,6 +16,40 @@ export default function useTasks() {
             return response.data;
         } catch (error: any) {
             console.error("getTasks error:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    // Pour récupérer une Task spécifique d'un projet
+    const getTaskById = useCallback(
+        async (projectId: number, taskId: number) => {
+            setLoading(true);
+            try {
+                const response = await api.get(
+                    `/api/projects/${projectId}/tasks/${taskId}/`
+                );
+                setSelectedTask(response.data);
+                return response.data;
+            } catch (error) {
+                console.error("getTaskById error:", error);
+                setSelectedTask(null);
+            } finally {
+                setLoading(false);
+            }
+        },
+        []
+    );
+
+    // Pour récupérer toutes les Tasks de l'utilisateur
+    const getAllUserTasks = useCallback(async () => {
+        setLoading(true);
+        try {
+            const response = await api.get("/api/tasks/all/");
+            setTasks(response.data);
+            return response.data;
+        } catch (error) {
+            console.error("getAllUserTasks error:", error);
         } finally {
             setLoading(false);
         }
@@ -42,5 +78,28 @@ export default function useTasks() {
         }
     };
 
-    return { tasks, setTasks, getTasks, createTask };
+    const deleteTask = async (projectId: number, taskId: number) => {
+        try {
+            await api.delete(`/api/projects/${projectId}/tasks/${taskId}/`);
+            // Mise à jour de la liste des Task pour retirer la Task supprimée
+            setTasks((prevTasks) =>
+                prevTasks.filter((task) => task.id !== taskId)
+            );
+        } catch (error) {
+            console.error("Failed to delete task:", error);
+            throw error;
+        }
+    };
+
+    return {
+        tasks,
+        setTasks,
+        getTasks,
+        createTask,
+        deleteTask,
+        getTaskById,
+        selectedTask,
+        getAllUserTasks,
+        loading,
+    };
 }

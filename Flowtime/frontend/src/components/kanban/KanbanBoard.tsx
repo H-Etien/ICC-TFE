@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Box, Grid, Paper, Typography, Card, CardContent } from "@mui/material";
+import { Link } from "react-router-dom";
 
 import {
     DndContext,
@@ -27,16 +28,18 @@ export interface Task {
 }
 
 interface KanbanBoardProps {
+    projectId: string | undefined;
     tasks: Task[];
     onTaskMove?: (taskId: number | string, newStatus: TaskStatus) => void;
 }
 
 // Composant pour une tâche déplaçable
 interface DraggableTaskProps {
+    projectId: string | undefined;
     task: Task;
 }
 
-function DraggableTask({ task }: DraggableTaskProps) {
+function DraggableTask({ task, projectId }: DraggableTaskProps) {
     const {
         attributes,
         listeners,
@@ -54,16 +57,21 @@ function DraggableTask({ task }: DraggableTaskProps) {
     };
 
     return (
-        <Card ref={setNodeRef} style={style} {...attributes} {...listeners}>
-            <CardContent>
-                <Typography variant="subtitle1">{task.title}</Typography>
-                {task.content && (
-                    <Typography variant="body2" color="text.secondary">
-                        {task.content}
-                    </Typography>
-                )}
-            </CardContent>
-        </Card>
+        <Link
+            to={`/project/${projectId}/task/${task.id}`}
+            style={{ textDecoration: "none" }}
+        >
+            <Card ref={setNodeRef} style={style} {...attributes} {...listeners}>
+                <CardContent>
+                    <Typography variant="subtitle1">{task.title}</Typography>
+                    {task.content && (
+                        <Typography variant="body2" color="text.secondary">
+                            {task.content}
+                        </Typography>
+                    )}
+                </CardContent>
+            </Card>
+        </Link>
     );
 }
 
@@ -91,14 +99,20 @@ function DroppableColumn({ status, children }: DroppableColumnProps) {
     );
 }
 
-const KanbanBoard: React.FC<KanbanBoardProps> = ({ tasks, onTaskMove }) => {
+const KanbanBoard: React.FC<KanbanBoardProps> = ({
+    tasks,
+    onTaskMove,
+    projectId,
+}) => {
     // Prendre la Task à drag & drop
     const [activeId, setActiveId] = useState<number | string | null>(null);
+
+    const distanceToStartDrag = 5; // Commencer le drag après X pixels de déplacement
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
-                distance: 8, // Commencer le drag après 8 pixels de déplacement
+                distance: distanceToStartDrag,
             },
         })
     );
@@ -212,6 +226,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ tasks, onTaskMove }) => {
                                         <DraggableTask
                                             key={task.id}
                                             task={task}
+                                            projectId={projectId}
                                         />
                                     ))}
                                 </DroppableColumn>

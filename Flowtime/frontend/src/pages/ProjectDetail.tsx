@@ -96,7 +96,11 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
             )}
 
             <CreateTaskForm projectId={id} createTask={createTask} />
-            <KanbanBoard tasks={tasks} onTaskMove={handleTaskMove} />
+            <KanbanBoard
+                projectId={id}
+                tasks={tasks}
+                onTaskMove={handleTaskMove}
+            />
             <ProjectGrid />
         </PageLayout>
     );

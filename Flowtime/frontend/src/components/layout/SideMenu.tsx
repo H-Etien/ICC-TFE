@@ -9,6 +9,7 @@ import SelectContent from "../ui/SelectContent";
 import MenuContent from "../menu/MenuContent";
 import CardAlert from "../ui/CardAlert";
 import OptionsMenu from "../menu/OptionsMenu";
+import useUser from "../../hooks/useUser";
 
 const drawerWidth = 240;
 
@@ -24,6 +25,11 @@ const Drawer = styled(MuiDrawer)({
 });
 
 export default function SideMenu() {
+    const { user } = useUser();
+
+    const displayName = user?.username || "Utilisateur";
+    const displayEmail = user?.email || "email@example.com";
+
     return (
         <Drawer
             variant="permanent"
@@ -54,7 +60,6 @@ export default function SideMenu() {
             >
                 {/* Naviguer à travers les différentes applications */}
                 <MenuContent />
-                <CardAlert />
             </Box>
             <Stack
                 direction="row"
@@ -68,7 +73,7 @@ export default function SideMenu() {
             >
                 <Avatar
                     sizes="small"
-                    alt="Riley Carter"
+                    alt={displayName}
                     src="/static/images/avatar/7.jpg"
                     sx={{ width: 36, height: 36 }}
                 />
@@ -77,16 +82,15 @@ export default function SideMenu() {
                         variant="body2"
                         sx={{ fontWeight: 500, lineHeight: "16px" }}
                     >
-                        Riley Carter
+                        {displayName}
                     </Typography>
                     <Typography
                         variant="caption"
                         sx={{ color: "text.secondary" }}
                     >
-                        riley@email.com
+                        {displayEmail}
                     </Typography>
                 </Box>
-                <OptionsMenu />
             </Stack>
         </Drawer>
     );
