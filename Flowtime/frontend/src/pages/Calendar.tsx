@@ -3,14 +3,17 @@ import { useNavigate } from "react-router-dom";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import frLocale from "@fullcalendar/core/locales/fr";
 import useTasks from "../hooks/useTasks";
 import PageLayout from "../components/layout/PageLayout";
 import Header from "../components/layout/Header";
 import { CircularProgress, Box } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 export default function Calendar(props: { disableCustomTheme?: boolean }) {
     const { tasks, loading, getAllUserTasks } = useTasks();
     const [events, setEvents] = useState<any[]>([]);
+    const { i18n } = useTranslation();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -43,6 +46,7 @@ export default function Calendar(props: { disableCustomTheme?: boolean }) {
     return (
         <PageLayout {...props}>
             <Header pageTitle="Calendar" />
+
             {loading ? (
                 <CircularProgress />
             ) : (
@@ -65,6 +69,7 @@ export default function Calendar(props: { disableCustomTheme?: boolean }) {
                         events={events}
                         eventClick={handleEventClick}
                         height="auto"
+                        locale={i18n.language === "fr" ? frLocale : "en"}
                     />
                 </Box>
             )}

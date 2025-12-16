@@ -13,8 +13,15 @@ export default function useProjects() {
 
         try {
             const response = await api.get("/api/projects/");
-            setProjects(response.data);
-            return response.data;
+
+            // Eviter les doublons
+            const uniqueProjects = response.data.filter(
+                (project, index, self) =>
+                    index ===
+                    self.findIndex((position) => position.id === project.id)
+            );
+            setProjects(uniqueProjects);
+            return uniqueProjects;
         } catch (error: any) {
             console.error("getProjects error:", error);
         } finally {
@@ -68,7 +75,7 @@ export default function useProjects() {
 
     useEffect(() => {
         getProjects();
-    }, [getProjects]);
+    }, []);
 
     return {
         projects,

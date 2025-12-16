@@ -22,6 +22,8 @@ import { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 
+import { Dayjs } from "dayjs";
+
 export default function CreateTaskForm({
     projectId,
     createTask,
@@ -150,7 +152,7 @@ export default function CreateTaskForm({
                             />
                         </FormControl>
 
-                        <FormControl>
+                        {/* <FormControl>
                             <FormLabel htmlFor="assigned_to">
                                 Assigner à (ID utilisateur, optionnel)
                             </FormLabel>
@@ -162,12 +164,12 @@ export default function CreateTaskForm({
                                 fullWidth
                                 variant="outlined"
                             />
-                        </FormControl>
+                        </FormControl> */}
 
                         {/* Date et heure (optionnel)  */}
                         <LocalizationProvider
                             dateAdapter={AdapterDayjs}
-                            adapterslocale="fr"
+                            // adapterslocale="fr"
                         >
                             <Stack spacing={2}>
                                 <DateTimePicker

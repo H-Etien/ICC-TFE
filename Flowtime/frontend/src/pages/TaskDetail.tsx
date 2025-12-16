@@ -152,12 +152,12 @@ export default function TaskDetail(props: { disableCustomTheme?: boolean }) {
 
     return (
         <PageLayout {...props}>
-            <Card sx={{ width: "100%", maxWidth: 800, mt: 4 }}>
+            <Card sx={{ width: "100%", maxWidth: 800, mt: 2 }}>
                 <CardContent>
                     {isEditing ? (
                         <Box display="flex" flexDirection="column" gap={2}>
+                            <Typography variant="p">Titre</Typography>
                             <TextField
-                                label="Titre"
                                 name="title"
                                 value={taskData.title}
                                 onChange={handleInputChange}
@@ -174,9 +174,8 @@ export default function TaskDetail(props: { disableCustomTheme?: boolean }) {
                             /> */}
 
                             <FormControl>
-                                <FormLabel htmlFor="content">
-                                    Description
-                                </FormLabel>
+                                <Typography variant="p">Description</Typography>
+
                                 <TextareaAutosize
                                     name="content"
                                     id="content"
@@ -204,13 +203,15 @@ export default function TaskDetail(props: { disableCustomTheme?: boolean }) {
                                     label="Date de début"
                                     value={startDate}
                                     onChange={setStartDate}
-                                    maxDate={endDate} // Pour empêcher de choisir une date de début après la date de fin
+                                    maxDate={endDate}
+                                    ampm={false}
                                 />
                                 <DateTimePicker
                                     label="Date de fin"
                                     value={endDate}
                                     onChange={setEndDate}
-                                    minDate={startDate} // Pour empêcher de choisir une date de fin avant la date de début
+                                    minDate={startDate}
+                                    ampm={false}
                                 />
                             </LocalizationProvider>
 
@@ -227,26 +228,33 @@ export default function TaskDetail(props: { disableCustomTheme?: boolean }) {
                                 >
                                     Enregistrer
                                 </Button>
-                                <Button
-                                    variant="outlined"
-                                    color="error"
-                                    onClick={openConfirmDialog}
-                                >
-                                    Supprimer
-                                </Button>
                             </Box>
                         </Box>
                     ) : (
                         <Box>
-                            <Typography variant="h4" gutterBottom>
+                            <Typography variant="h4">
                                 {selectedTask.title}
                             </Typography>
-                            <Typography variant="body1" paragraph>
+                            <Typography variant="body1">
                                 {selectedTask.content || "Pas de description."}
                             </Typography>
-                            <Typography variant="subtitle2">
-                                Statut: {selectedTask.status}
-                            </Typography>
+
+                            {/* Afficher les dates */}
+                            <Box sx={{ mt: 2, mb: 2 }}>
+                                <Typography variant="body2" sx={{ mt: 1 }}>
+                                    <strong>Date de début:</strong>{" "}
+                                    {startDate
+                                        ? startDate.format("DD/MM/YYYY HH:mm")
+                                        : "Non définie"}
+                                </Typography>
+                                <Typography variant="body2" sx={{ mt: 1 }}>
+                                    <strong>Date de fin:</strong>{" "}
+                                    {endDate
+                                        ? endDate.format("DD/MM/YYYY HH:mm")
+                                        : "Non définie"}
+                                </Typography>
+                            </Box>
+
                             <Button
                                 variant="contained"
                                 onClick={() => setIsEditing(true)}

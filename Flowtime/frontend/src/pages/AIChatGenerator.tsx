@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
     Box,
     TextField,
@@ -24,6 +25,7 @@ interface Message {
 }
 
 const AIChatGenerator: React.FC<{ disableCustomTheme?: boolean }> = (props) => {
+    const { t } = useTranslation();
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -81,7 +83,7 @@ const AIChatGenerator: React.FC<{ disableCustomTheme?: boolean }> = (props) => {
 
     return (
         <PageLayout {...props}>
-            <Header pageTitle="AI Project Generator" />
+            <Header pageTitle={t("ai.ai_project_generator")} />
             <Divider sx={{ my: 2 }} />
 
             {/* Boîte de dialogue avec AI pour disctuer et générer des projets et des tâches */}
@@ -96,18 +98,17 @@ const AIChatGenerator: React.FC<{ disableCustomTheme?: boolean }> = (props) => {
                             }}
                         >
                             <Typography variant="h5" sx={{ mb: 2 }}>
-                                Commencez la conversation !
+                                {t("ai.start_conversation")}
                             </Typography>
 
                             <Typography variant="body1" sx={{ mt: 5 }}>
-                                Décrivez le projet que vous souhaitez créer.
+                                {t("ai.describe_project")}
                             </Typography>
                             <Typography
                                 variant="caption"
                                 sx={{ fontStyle: "italic" }}
                             >
-                                Ex: "Je veux créer un site e-commerce pour
-                                vendre des plantes."
+                                {t("ai.example_project")}
                             </Typography>
                         </Box>
                     ) : (
@@ -160,19 +161,8 @@ const AIChatGenerator: React.FC<{ disableCustomTheme?: boolean }> = (props) => {
                     spacing={1}
                     sx={{ width: "100%", alignItems: "stretch" }}
                 >
-                    {/* <TextField
-                        fullWidth
-                        variant="outlined"
-                        placeholder="Votre message..."
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyPress={(e) =>
-                            e.key === "Enter" && !isLoading && handleSend()
-                        }
-                    /> */}
-
                     <TextareaAutosize
-                        placeholder="Votre message..."
+                        placeholder={t("ai.your_message")}
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         minRows={1}
@@ -206,7 +196,7 @@ const AIChatGenerator: React.FC<{ disableCustomTheme?: boolean }> = (props) => {
                         onClick={handleSend}
                         disabled={isLoading}
                     >
-                        Envoyer
+                        {t("ai.send")}
                     </Button>
                 </Stack>
 
@@ -225,8 +215,8 @@ const AIChatGenerator: React.FC<{ disableCustomTheme?: boolean }> = (props) => {
                         }
                     >
                         {isGenerating
-                            ? "Génération en cours..."
-                            : "Générer le Projet"}
+                            ? t("ai.generating")
+                            : t("ai.generate_project")}
                     </Button>
                 </Box>
             </Stack>

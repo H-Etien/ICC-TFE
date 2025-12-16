@@ -1,13 +1,17 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from django.db import transaction
 from django.db.models import F
+from django.http import HttpResponse
 
 from ..models import Project
 
 from ..serializers import TaskSerializer
 from ..models import Task
+from ..services.icalendar_service import export_tasks_by_project
 
 """
 Pour lister tous les Task dont le user est membre 
@@ -86,3 +90,27 @@ class UserAllTasksListView(generics.ListAPIView):
         user = self.request.user
         # Pour avoir toutes les Task d'un utilisateur
         return Task.objects.filter(project__members=user).distinct()
+
+
+"""
+Pour exporter les tâches d'un projet en format .ics (iCalendar)
+"""
+class TaskExportProjectView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, project_pk):
+        # Vérifier que l'utilisateur est membre du projet
+        try:
+            project = Project.objects.get(pk=project_pk)
+            if request.user not in project.members.all():
+                return Response({"error": "You are not a member of this project"}, status=403)
+        except Project.DoesNotExist:
+            return Response({"error": "Project not found"}, status=404)
+        
+        # Générer le fichier .ics
+        ics_content = export_tasks_by_project(project)
+        
+        # Retourner le fichier en download
+        response = HttpResponse(ics_content, content_type='text/calendar')
+        response['Content-Disposition'] = f'attachment; filename="{project.title}_tasks.ics"'
+        return response
