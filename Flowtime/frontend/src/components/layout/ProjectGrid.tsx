@@ -15,15 +15,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import ChartUserByCountry from "../charts/ChartUserByCountry";
-import CustomizedTreeView from "../ui/CustomizedTreeView";
-import CustomizedDataGrid from "../data/CustomizedDataGrid";
-import HighlightedCard from "../ui/HighlightedCard";
-import PageViewsBarChart from "../charts/PageViewsBarChart";
-import SessionsChart from "../charts/SessionsChart";
 import StatCard, { StatCardProps } from "../ui/StatCard";
 import CircularProgress from "@mui/material/CircularProgress";
-import Copyright from "../ui/Copyright";
 
 import useProjects from "../../hooks/useProjects";
 

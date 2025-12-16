@@ -21,7 +21,7 @@ urlpatterns = [
     path('projects/<int:project_pk>/tasks/<int:pk>/', TaskDetailView.as_view(), name='project_task_detail'),
     
     # Task Export vers Google Calendar
-    path('projects/<uuid:project_pk>/tasks/export/', TaskExportProjectView.as_view(), name='task_export_project'),  
+    path('projects/<int:project_pk>/tasks/export/', TaskExportProjectView.as_view(), name='task_export_project'),  
     
     # JWT Tokens pour l'authentification
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

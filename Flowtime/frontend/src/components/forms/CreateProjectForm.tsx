@@ -247,7 +247,7 @@ export default function CreateProjectForm({}) {
                                             onDelete={() =>
                                                 handleRemoveMember(member.id)
                                             }
-                                            color="grey"
+                                            color="default"
                                             variant="outlined"
                                             sx={{
                                                 height: 40,
@@ -255,7 +255,7 @@ export default function CreateProjectForm({}) {
                                                 borderRadius: 2,
                                             }}
                                             deleteIcon={
-                                                <CloseIcon fontSize="big" />
+                                                <CloseIcon fontSize="small" />
                                             }
                                         />
                                     ))}
