@@ -33,5 +33,15 @@
         "delete": "Delete",
         "loading": "Loading...",
         "error": "An error occurred"
+    },
+    "ai": {
+        "ai_project_generator": "AI Project Generator",
+        "start_conversation": "Start the conversation!",
+        "describe_project": "Describe the project you want to create.",
+        "example_project": "Ex: \"I want to create an e-commerce site to sell plants.\"",
+        "your_message": "Your message...",
+        "send": "Send",
+        "generate_project": "Generate Project",
+        "generating": "Generating..."
     }
 }
