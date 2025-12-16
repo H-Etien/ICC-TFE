@@ -1,5 +1,6 @@
 import { use, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import Header from "../components/layout/Header";
 import ProjectGrid from "../components/layout/ProjectGrid";
@@ -48,6 +49,7 @@ const xThemeComponents = {
 
 export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
     const { id } = useParams<{ id: string }>();
+    const { t } = useTranslation();
     const { getProjectById, selectedProject } = useProjects();
     const { getTasks, tasks, setTasks, createTask } = useTasks();
     const navigate = useNavigate();
@@ -57,6 +59,11 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
         title: "",
         description: "",
     });
+
+    // Pour la gestion des membres
+    const [newMemberEmail, setNewMemberEmail] = useState("");
+    const [isAddingMember, setIsAddingMember] = useState(false);
+    const [isRemovingMember, setIsRemovingMember] = useState(false);
 
     // Pour le dialogue de confirmation de suppression du projet
     const [confirmOpen, setConfirmOpen] = useState(false);
@@ -159,6 +166,43 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
         }
     };
 
+    // Ajouter un membre au projet
+    const handleAddMember = async () => {
+        if (!newMemberEmail.trim() || !id) return;
+
+        setIsAddingMember(true);
+        try {
+            await api.post(`/api/projects/${id}/add_member/`, {
+                email: newMemberEmail,
+            });
+            setNewMemberEmail("");
+            // Recharge le projet pour voir les nouveaux membres
+            await getProjectById(Number(id));
+        } catch (error) {
+            console.error("Error adding member:", error);
+        } finally {
+            setIsAddingMember(false);
+        }
+    };
+
+    // Supprimer un membre du projet
+    const handleRemoveMember = async (memberId: number) => {
+        if (!id) return;
+
+        setIsRemovingMember(true);
+        try {
+            await api.post(`/api/projects/${id}/remove_member/`, {
+                member_id: memberId,
+            });
+            // Recharge le projet
+            await getProjectById(Number(id));
+        } catch (error) {
+            console.error("Error removing member:", error);
+        } finally {
+            setIsRemovingMember(false);
+        }
+    };
+
     // Dialogue de confirmation
     const openConfirmDialog = () => {
         setConfirmOpen(true);
@@ -206,7 +250,7 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
                             width="100%"
                         >
                             <Typography variant="h5" component="h2">
-                                Titre
+                                {t("project.title_label")}
                             </Typography>
                             <TextField
                                 name="title"
@@ -216,7 +260,7 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
                             />
 
                             <Typography variant="h6" component="h3">
-                                Description
+                                {t("project.description_label")}
                             </Typography>
 
                             <TextareaAutosize
@@ -236,18 +280,91 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
                                     fontSize: "0.875rem",
                                 }}
                             />
+
+                            {/* Gestion des membres */}
+                            <Typography variant="h6" component="h3">
+                                {t("project.members")}
+                            </Typography>
+
+                            {selectedProject?.members && (
+                                <Box sx={{ mb: 2 }}>
+                                    {selectedProject.members.map(
+                                        (member: any) => (
+                                            <Box
+                                                key={member.id}
+                                                display="flex"
+                                                justifyContent="space-between"
+                                                alignItems="center"
+                                                sx={{
+                                                    p: 1,
+                                                    mb: 1,
+                                                    border: "1px solid #eee",
+                                                    borderRadius: 1,
+                                                }}
+                                            >
+                                                <Typography>
+                                                    {member.email}
+                                                </Typography>
+                                                <Button
+                                                    variant="outlined"
+                                                    color="error"
+                                                    size="small"
+                                                    onClick={() =>
+                                                        handleRemoveMember(
+                                                            member.id
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        isRemovingMember ||
+                                                        member.id ===
+                                                            selectedProject
+                                                                .owner.id
+                                                    }
+                                                >
+                                                    {t("project.remove_member")}
+                                                </Button>
+                                            </Box>
+                                        )
+                                    )}
+                                </Box>
+                            )}
+
+                            {/* Ajouter un nouveau membre */}
+                            <Box display="flex" gap={1}>
+                                <TextField
+                                    label={t("project.member_email")}
+                                    value={newMemberEmail}
+                                    onChange={(e) =>
+                                        setNewMemberEmail(e.target.value)
+                                    }
+                                    fullWidth
+                                    size="small"
+                                />
+                                <Button
+                                    variant="contained"
+                                    onClick={handleAddMember}
+                                    disabled={
+                                        !newMemberEmail.trim() || isAddingMember
+                                    }
+                                >
+                                    {isAddingMember
+                                        ? t("project.saving")
+                                        : t("project.add_member")}
+                                </Button>
+                            </Box>
+
                             <Box display="flex" gap={2}>
                                 <Button
                                     variant="outlined"
                                     onClick={() => setIsEditing(false)}
                                 >
-                                    Annuler
+                                    {t("common.cancel")}
                                 </Button>
                                 <Button
                                     variant="contained"
                                     onClick={handleSave}
                                 >
-                                    Enregistrer
+                                    {t("common.save")}
                                 </Button>
                             </Box>
                         </Box>
@@ -285,7 +402,7 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
                                     variant="contained"
                                     onClick={() => setIsEditing(true)}
                                 >
-                                    Modifier le projet
+                                    {t("project.edit_project")}
                                 </Button>
                             </div>
 
@@ -302,7 +419,7 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
                                     startIcon={<DownloadIcon />}
                                     onClick={handleExportToCalendar}
                                 >
-                                    Exporter en .ics pour Google Calendar
+                                    {t("project.export_calendar")}
                                 </Button>
                             </div>
                         </div>
@@ -320,17 +437,17 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
 
             {/* Dialogue de confirmation pour supprimer un projet */}
             <Dialog open={confirmOpen} onClose={closeConfirmDialog}>
-                <DialogTitle>Supprimer le projet ?</DialogTitle>
+                <DialogTitle>{t("project.confirm_delete_project")}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         {selectedProject
-                            ? `Voulez-vous vraiment supprimer le projet "${selectedProject.title}" ? Cette action est irréversible et supprimera aussi toutes les tâches associées.`
+                            ? `${t("project.confirm_delete_project")} "${selectedProject.title}"`
                             : ""}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={closeConfirmDialog} disabled={isDeleting}>
-                        Annuler
+                        {t("common.cancel")}
                     </Button>
                     <Button
                         color="error"
@@ -338,7 +455,9 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
                         disabled={isDeleting}
                         autoFocus
                     >
-                        {isDeleting ? "Suppression..." : "Supprimer"}
+                        {isDeleting
+                            ? t("project.deleting")
+                            : t("project.delete_confirm")}
                     </Button>
                 </DialogActions>
             </Dialog>

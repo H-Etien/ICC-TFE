@@ -138,7 +138,10 @@ const AIChatGenerator: React.FC<{ disableCustomTheme?: boolean }> = (props) => {
                                                 : "text.primary",
                                     }}
                                 >
-                                    <Typography variant="body1">
+                                    <Typography
+                                        variant="body1"
+                                        sx={{ whiteSpace: "pre-wrap" }}
+                                    >
                                         {msg.content}
                                     </Typography>
                                 </Paper>

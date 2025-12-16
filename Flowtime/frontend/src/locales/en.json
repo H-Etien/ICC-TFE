@@ -18,7 +18,20 @@
         "title": "Projects",
         "no_projects": "No projects found",
         "delete": "Delete",
-        "edit": "Edit"
+        "edit": "Edit",
+        "edit_project": "Edit Project",
+        "export_calendar": "Export to .ics for Google Calendar",
+        "members": "Members",
+        "add_member": "Add Member",
+        "remove_member": "Remove",
+        "member_email": "Member Email",
+        "confirm_delete_project": "Delete project?",
+        "title_label": "Title",
+        "description_label": "Description",
+        "kanban_title": "Kanban Board",
+        "delete_confirm": "Delete",
+        "deleting": "Deleting...",
+        "saving": "Saving..."
     },
     "task": {
         "title": "Tasks",

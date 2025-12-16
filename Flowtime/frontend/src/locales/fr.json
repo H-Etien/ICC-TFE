@@ -18,7 +18,20 @@
         "title": "Projets",
         "no_projects": "Aucun projet trouvé",
         "delete": "Supprimer",
-        "edit": "Modifier"
+        "edit": "Modifier",
+        "edit_project": "Modifier le projet",
+        "export_calendar": "Exporter en .ics pour Google Calendar",
+        "members": "Membres",
+        "add_member": "Ajouter un membre",
+        "remove_member": "Supprimer",
+        "member_email": "Email du membre",
+        "confirm_delete_project": "Supprimer le projet ?",
+        "title_label": "Titre",
+        "description_label": "Description",
+        "kanban_title": "Tableau Kanban",
+        "delete_confirm": "Supprimer",
+        "deleting": "Suppression...",
+        "saving": "Enregistrement..."
     },
     "task": {
         "title": "Tâches",
