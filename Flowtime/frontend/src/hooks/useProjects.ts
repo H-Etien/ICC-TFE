@@ -68,7 +68,7 @@ export default function useProjects() {
 
     useEffect(() => {
         getProjects();
-    }, [getProjects]);
+    }, []);
 
     return {
         projects,

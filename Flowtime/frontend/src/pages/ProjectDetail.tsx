@@ -169,6 +169,22 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
         }
     };
 
+    // Gère la suppression après confirmation
+    const handleConfirmDelete = async () => {
+        if (!id) return;
+
+        setIsDeleting(true);
+        try {
+            await api.delete(`/api/projects/${id}/`);
+            closeConfirmDialog();
+            navigate("/"); // Rediriger vers la page d'accueil après la suppression
+        } catch (error) {
+            console.error("Error delete project", error);
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
     return (
         <PageLayout {...props} themeComponents={xThemeComponents}>
             <Header pageTitle="Project" />
@@ -205,12 +221,11 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
 
                             <TextareaAutosize
                                 name="description"
-                                label="Description"
+                                aria-label="Description"
                                 value={projectData.description}
                                 onChange={handleInputChange}
-                                multiline
-                                rows={4}
-                                fullWidth
+                                minRows={2}
+                                maxRows={4}
                                 style={{
                                     // pour avoir le même style que les TextField de MUI
                                     width: "100%",
@@ -237,7 +252,7 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
                             </Box>
                         </Box>
                     ) : (
-                        <div width="100%">
+                        <div>
                             <Typography
                                 variant="h4"
                                 component="h2"
@@ -264,8 +279,6 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
                                     width: "100%",
                                     display: "flex",
                                     justifyContent: "center",
-                                    pb: 2,
-                                    mb: 2,
                                 }}
                             >
                                 <Button
