@@ -28,8 +28,16 @@ class ProjectListCreateView(generics.ListCreateAPIView):
         return Project.objects.filter(members=user) | Project.objects.filter(owner=user)
 
     def perform_create(self, serializer):
-        project = serializer.save(owner=self.request.user)
-        project.members.add(self.request.user)  # Ajouter le créateur comme membre du projet
+        user = request.user
+        
+        # Vérifier si l'utilisateur peut créer un projet
+        if not user.profile.can_create_project():
+            raise PermissionDenied(
+                "Vous ne pouvez pas créer de projets."
+            )
+        
+        project = serializer.save(owner=user)
+        project.members.add(user)  # Ajouter le créateur comme membre du projet
         
         # Ajouter les autres membres si fournis
         members_ids = self.request.data.get('members', [])

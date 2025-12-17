@@ -48,7 +48,6 @@ export default function SideMenu() {
                     p: 2,
                     textAlign: "center",
                     fontSize: 18,
-                    fontWeight: "bold",
                 }}
             >
                 Flowtime

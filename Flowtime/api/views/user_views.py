@@ -49,7 +49,7 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Response(serializer.data)
     
 
-    def destroy(self):
+    def destroy(self, request, *args, **kwargs):
         user = self.get_object()
         
         user.delete()

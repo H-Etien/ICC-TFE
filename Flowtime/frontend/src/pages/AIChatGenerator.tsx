@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -12,7 +12,11 @@ import {
     Stack,
     Divider,
     Grow,
+    Card,
+    CardContent,
 } from "@mui/material";
+import LockIcon from "@mui/icons-material/Lock";
+import StarIcon from "@mui/icons-material/Star";
 
 import api from "../api";
 import PageLayout from "../components/layout/PageLayout";
@@ -30,7 +34,30 @@ const AIChatGenerator: React.FC<{ disableCustomTheme?: boolean }> = (props) => {
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [trialUsed, setTrialUsed] = useState(false);
+    const [isPremium, setIsPremium] = useState(false);
+    const [loadingStatus, setLoadingStatus] = useState(true);
     const navigate = useNavigate();
+
+    // Vérifier le statut du trial au chargement
+    useEffect(() => {
+        const checkTrialStatus = async () => {
+            try {
+                const response = await api.get("/api/stripe/trial-status/");
+                console.log("✅ Trial status response:", response.data);
+                setTrialUsed(response.data.trial_ai_used);
+                setIsPremium(response.data.is_premium);
+            } catch (error) {
+                console.error("❌ Error checking trial status:", error);
+            } finally {
+                setLoadingStatus(false);
+            }
+        };
+        checkTrialStatus();
+    }, []);
+
+    console.log("📊 State - Trial used:", trialUsed, "isPremium:", isPremium);
+    console.log("🔒 Show blocked UI:", trialUsed && !isPremium);
 
     const handleSend = async () => {
         if (!input.trim()) return;
@@ -86,143 +113,198 @@ const AIChatGenerator: React.FC<{ disableCustomTheme?: boolean }> = (props) => {
             <Header pageTitle={t("ai.ai_project_generator")} />
             <Divider sx={{ my: 2 }} />
 
-            {/* Boîte de dialogue avec AI pour disctuer et générer des projets et des tâches */}
-            <Stack spacing={2} sx={{ width: "100%", maxWidth: "md" }}>
-                <Paper elevation={3} sx={{ height: "60vh", overflowY: "auto" }}>
-                    {messages.length === 0 ? (
-                        <Box
-                            sx={{
-                                textAlign: "center",
-                                color: "grey.500",
-                                mt: "20%",
-                            }}
-                        >
-                            <Typography variant="h5" sx={{ mb: 2 }}>
-                                {t("ai.start_conversation")}
-                            </Typography>
-
-                            <Typography variant="body1" sx={{ mt: 5 }}>
-                                {t("ai.describe_project")}
-                            </Typography>
-                            <Typography
-                                variant="caption"
-                                sx={{ fontStyle: "italic" }}
-                            >
-                                {t("ai.example_project")}
-                            </Typography>
-                        </Box>
-                    ) : (
-                        messages.map((msg, index) => (
+            {loadingStatus ? (
+                <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
+                    <CircularProgress />
+                </Box>
+            ) : trialUsed && !isPremium ? (
+                // Afficher le message de blocage
+                <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
+                    <Card
+                        sx={{
+                            maxWidth: 500,
+                            width: "100%",
+                            textAlign: "center",
+                        }}
+                        elevation={3}
+                    >
+                        <CardContent>
+                            <Stack spacing={3} alignItems="center">
+                                <LockIcon
+                                    sx={{ fontSize: 80, color: "warning.main" }}
+                                />
+                                <Typography variant="h5" fontWeight="bold">
+                                    Essai gratuit épuisé
+                                </Typography>
+                                <Typography
+                                    variant="body1"
+                                    color="text.secondary"
+                                >
+                                    Vous avez utilisé votre essai gratuit de
+                                    l'IA. Passez à Premium pour continuer à
+                                    générer des projets avec l'IA.
+                                </Typography>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    startIcon={<StarIcon />}
+                                    onClick={() => navigate("/premium")}
+                                    size="large"
+                                >
+                                    Passer à Premium
+                                </Button>
+                            </Stack>
+                        </CardContent>
+                    </Card>
+                </Box>
+            ) : (
+                // Afficher le chat normal
+                <Stack spacing={2} sx={{ width: "100%", maxWidth: "md" }}>
+                    <Paper
+                        elevation={3}
+                        sx={{ height: "60vh", overflowY: "auto" }}
+                    >
+                        {messages.length === 0 ? (
                             <Box
-                                key={index}
                                 sx={{
-                                    mb: 2,
-                                    p: 2,
-                                    textAlign:
-                                        msg.role === "user" ? "right" : "left",
+                                    textAlign: "center",
+                                    color: "grey.500",
+                                    mt: "20%",
                                 }}
                             >
-                                <Paper
-                                    elevation={1}
+                                <Typography variant="h5" sx={{ mb: 2 }}>
+                                    {t("ai.start_conversation")}
+                                </Typography>
+
+                                <Typography variant="body1" sx={{ mt: 5 }}>
+                                    {t("ai.describe_project")}
+                                </Typography>
+                                <Typography
+                                    variant="caption"
+                                    sx={{ fontStyle: "italic" }}
+                                >
+                                    {t("ai.example_project")}
+                                </Typography>
+                            </Box>
+                        ) : (
+                            messages.map((msg, index) => (
+                                <Box
+                                    key={index}
                                     sx={{
-                                        p: 1.5,
-                                        display: "inline-block",
-                                        maxWidth: "80%",
-                                        bgcolor:
+                                        mb: 2,
+                                        p: 2,
+                                        textAlign:
                                             msg.role === "user"
-                                                ? "primary.main"
-                                                : "background.default",
-                                        color:
-                                            msg.role === "user"
-                                                ? "primary.contrastText"
-                                                : "text.primary",
+                                                ? "right"
+                                                : "left",
                                     }}
                                 >
-                                    <Typography
-                                        variant="body1"
-                                        sx={{ whiteSpace: "pre-wrap" }}
+                                    <Paper
+                                        elevation={1}
+                                        sx={{
+                                            p: 1.5,
+                                            display: "inline-block",
+                                            maxWidth: "80%",
+                                            bgcolor:
+                                                msg.role === "user"
+                                                    ? "primary.main"
+                                                    : "background.default",
+                                            color:
+                                                msg.role === "user"
+                                                    ? "primary.contrastText"
+                                                    : "text.primary",
+                                        }}
                                     >
-                                        {msg.content}
-                                    </Typography>
-                                </Paper>
+                                        <Typography
+                                            variant="body1"
+                                            sx={{ whiteSpace: "pre-wrap" }}
+                                        >
+                                            {msg.content}
+                                        </Typography>
+                                    </Paper>
+                                </Box>
+                            ))
+                        )}
+                        {isLoading && (
+                            <Box sx={{ mb: 2, p: 5 }}>
+                                <CircularProgress
+                                    size={24}
+                                    sx={{ display: "block", margin: "auto" }}
+                                />
                             </Box>
-                        ))
-                    )}
-                    {isLoading && (
-                        <Box sx={{ mb: 2, p: 5 }}>
-                            <CircularProgress
-                                size={24}
-                                sx={{ display: "block", margin: "auto" }}
-                            />
-                        </Box>
-                    )}
-                </Paper>
+                        )}
+                    </Paper>
 
-                {/* Champ pour envoyer des messages à l'AI */}
-                <Stack
-                    direction="row"
-                    spacing={1}
-                    sx={{ width: "100%", alignItems: "stretch" }}
-                >
-                    <TextareaAutosize
-                        placeholder={t("ai.your_message")}
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        minRows={1}
-                        maxRows={5}
-                        style={{
-                            flex: 1,
-                            boxSizing: "border-box",
-                            borderRadius: 4,
-                            fontFamily: "Roboto, Helvetica, Arial, sans-serif",
-                            fontSize: "0.875rem",
-                            flexGrow: 1,
-                            padding: "12px",
-                            border: "1px solid #ccc",
-                        }}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                                if (e.shiftKey) {
-                                    // Si Shift+Enter: ajouter une nouvelle ligne
-                                    e.preventDefault();
-                                    setInput(input + "\n");
-                                } else if (!e.shiftKey && !isLoading) {
-                                    // Si Enter seul: envoyer le message
-                                    e.preventDefault();
-                                    handleSend();
+                    {/* Champ pour envoyer des messages à l'AI */}
+                    <Stack
+                        direction="row"
+                        spacing={1}
+                        sx={{ width: "100%", alignItems: "stretch" }}
+                    >
+                        <TextareaAutosize
+                            placeholder={t("ai.your_message")}
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            minRows={1}
+                            maxRows={5}
+                            style={{
+                                flex: 1,
+                                boxSizing: "border-box",
+                                borderRadius: 4,
+                                fontFamily:
+                                    "Roboto, Helvetica, Arial, sans-serif",
+                                fontSize: "0.875rem",
+                                flexGrow: 1,
+                                padding: "12px",
+                                border: "1px solid #ccc",
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    if (e.shiftKey) {
+                                        // Si Shift+Enter: ajouter une nouvelle ligne
+                                        e.preventDefault();
+                                        setInput(input + "\n");
+                                    } else if (!e.shiftKey && !isLoading) {
+                                        // Si Enter seul: envoyer le message
+                                        e.preventDefault();
+                                        handleSend();
+                                    }
                                 }
-                            }
-                        }}
-                    />
-                    <Button
-                        variant="contained"
-                        onClick={handleSend}
-                        disabled={isLoading}
-                    >
-                        {t("ai.send")}
-                    </Button>
-                </Stack>
+                            }}
+                        />
+                        <Button
+                            variant="contained"
+                            onClick={handleSend}
+                            disabled={isLoading}
+                        >
+                            {t("ai.send")}
+                        </Button>
+                    </Stack>
 
-                <Box sx={{ mt: 2, textAlign: "center" }}>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={handleGenerateProject}
-                        disabled={messages.length < 2 || isGenerating}
-                        startIcon={
-                            isGenerating ? (
-                                <CircularProgress size={20} color="inherit" />
-                            ) : (
-                                ""
-                            )
-                        }
-                    >
-                        {isGenerating
-                            ? t("ai.generating")
-                            : t("ai.generate_project")}
-                    </Button>
-                </Box>
-            </Stack>
+                    <Box sx={{ mt: 2, textAlign: "center" }}>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={handleGenerateProject}
+                            disabled={messages.length < 2 || isGenerating}
+                            startIcon={
+                                isGenerating ? (
+                                    <CircularProgress
+                                        size={20}
+                                        color="inherit"
+                                    />
+                                ) : (
+                                    ""
+                                )
+                            }
+                        >
+                            {isGenerating
+                                ? t("ai.generating")
+                                : t("ai.generate_project")}
+                        </Button>
+                    </Box>
+                </Stack>
+            )}
         </PageLayout>
     );
 };

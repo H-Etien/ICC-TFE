@@ -60,11 +60,6 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
         description: "",
     });
 
-    // Pour la gestion des membres
-    const [newMemberEmail, setNewMemberEmail] = useState("");
-    const [isAddingMember, setIsAddingMember] = useState(false);
-    const [isRemovingMember, setIsRemovingMember] = useState(false);
-
     // Pour le dialogue de confirmation de suppression du projet
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -166,43 +161,6 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
         }
     };
 
-    // Ajouter un membre au projet
-    const handleAddMember = async () => {
-        if (!newMemberEmail.trim() || !id) return;
-
-        setIsAddingMember(true);
-        try {
-            await api.post(`/api/projects/${id}/add_member/`, {
-                email: newMemberEmail,
-            });
-            setNewMemberEmail("");
-            // Recharge le projet pour voir les nouveaux membres
-            await getProjectById(Number(id));
-        } catch (error) {
-            console.error("Error adding member:", error);
-        } finally {
-            setIsAddingMember(false);
-        }
-    };
-
-    // Supprimer un membre du projet
-    const handleRemoveMember = async (memberId: number) => {
-        if (!id) return;
-
-        setIsRemovingMember(true);
-        try {
-            await api.post(`/api/projects/${id}/remove_member/`, {
-                member_id: memberId,
-            });
-            // Recharge le projet
-            await getProjectById(Number(id));
-        } catch (error) {
-            console.error("Error removing member:", error);
-        } finally {
-            setIsRemovingMember(false);
-        }
-    };
-
     // Dialogue de confirmation
     const openConfirmDialog = () => {
         setConfirmOpen(true);
@@ -280,78 +238,6 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
                                     fontSize: "0.875rem",
                                 }}
                             />
-
-                            {/* Gestion des membres */}
-                            <Typography variant="h6" component="h3">
-                                {t("project.members")}
-                            </Typography>
-
-                            {selectedProject?.members && (
-                                <Box sx={{ mb: 2 }}>
-                                    {selectedProject.members.map(
-                                        (member: any) => (
-                                            <Box
-                                                key={member.id}
-                                                display="flex"
-                                                justifyContent="space-between"
-                                                alignItems="center"
-                                                sx={{
-                                                    p: 1,
-                                                    mb: 1,
-                                                    border: "1px solid #eee",
-                                                    borderRadius: 1,
-                                                }}
-                                            >
-                                                <Typography>
-                                                    {member.email}
-                                                </Typography>
-                                                <Button
-                                                    variant="outlined"
-                                                    color="error"
-                                                    size="small"
-                                                    onClick={() =>
-                                                        handleRemoveMember(
-                                                            member.id
-                                                        )
-                                                    }
-                                                    disabled={
-                                                        isRemovingMember ||
-                                                        member.id ===
-                                                            selectedProject
-                                                                .owner.id
-                                                    }
-                                                >
-                                                    {t("project.remove_member")}
-                                                </Button>
-                                            </Box>
-                                        )
-                                    )}
-                                </Box>
-                            )}
-
-                            {/* Ajouter un nouveau membre */}
-                            <Box display="flex" gap={1}>
-                                <TextField
-                                    label={t("project.member_email")}
-                                    value={newMemberEmail}
-                                    onChange={(e) =>
-                                        setNewMemberEmail(e.target.value)
-                                    }
-                                    fullWidth
-                                    size="small"
-                                />
-                                <Button
-                                    variant="contained"
-                                    onClick={handleAddMember}
-                                    disabled={
-                                        !newMemberEmail.trim() || isAddingMember
-                                    }
-                                >
-                                    {isAddingMember
-                                        ? t("project.saving")
-                                        : t("project.add_member")}
-                                </Button>
-                            </Box>
 
                             <Box display="flex" gap={2}>
                                 <Button
@@ -441,7 +327,9 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
                 <DialogContent>
                     <DialogContentText>
                         {selectedProject
-                            ? `${t("project.confirm_delete_project")} "${selectedProject.title}"`
+                            ? `${t("project.confirm_delete_project")} "${
+                                  selectedProject.title
+                              }"`
                             : ""}
                     </DialogContentText>
                 </DialogContent>
