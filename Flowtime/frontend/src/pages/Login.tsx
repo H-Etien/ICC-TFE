@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -61,6 +62,7 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignIn(props: { disableCustomTheme?: boolean }) {
+    const { t } = useTranslation();
     const [emailError, setEmailError] = React.useState(false);
     const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
     const [passwordError, setPasswordError] = React.useState(false);
@@ -126,7 +128,6 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
                     sx={{ position: "fixed", top: "1rem", right: "1rem" }}
                 />
                 <Card variant="outlined">
-                    <SitemarkIcon />
                     <Typography
                         component="h1"
                         variant="h4"
@@ -135,12 +136,12 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
                             fontSize: "clamp(2rem, 10vw, 2.15rem)",
                         }}
                     >
-                        Connexion
+                        {t("auth.login_title")}
                     </Typography>
 
                     <LoginForm route="/api/token/" method="login" />
 
-                    <Divider>or</Divider>
+                    <Divider>{t("auth.or")}</Divider>
                     <Box
                         sx={{
                             display: "flex",
@@ -148,30 +149,14 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
                             gap: 2,
                         }}
                     >
-                        <Button
-                            fullWidth
-                            variant="outlined"
-                            onClick={() => alert("Sign in with Google")}
-                            startIcon={<GoogleIcon />}
-                        >
-                            Sign in with Google
-                        </Button>
-                        <Button
-                            fullWidth
-                            variant="outlined"
-                            onClick={() => alert("Sign in with Facebook")}
-                            startIcon={<FacebookIcon />}
-                        >
-                            Sign in with Facebook
-                        </Button>
                         <Typography sx={{ textAlign: "center" }}>
-                            Don&apos;t have an account?{" "}
+                            {t("auth.dont_have_account")}{" "}
                             <Link
                                 href="/register"
                                 variant="body2"
                                 sx={{ alignSelf: "center" }}
                             >
-                                Inscription
+                                {t("auth.sign_up")}
                             </Link>
                         </Typography>
                     </Box>

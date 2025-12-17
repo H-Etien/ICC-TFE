@@ -44,20 +44,17 @@ const AIChatGenerator: React.FC<{ disableCustomTheme?: boolean }> = (props) => {
         const checkTrialStatus = async () => {
             try {
                 const response = await api.get("/api/stripe/trial-status/");
-                console.log("✅ Trial status response:", response.data);
+                console.log("Trial status response:", response.data);
                 setTrialUsed(response.data.trial_ai_used);
                 setIsPremium(response.data.is_premium);
             } catch (error) {
-                console.error("❌ Error checking trial status:", error);
+                console.error("Error Trial", error);
             } finally {
                 setLoadingStatus(false);
             }
         };
         checkTrialStatus();
     }, []);
-
-    console.log("📊 State - Trial used:", trialUsed, "isPremium:", isPremium);
-    console.log("🔒 Show blocked UI:", trialUsed && !isPremium);
 
     const handleSend = async () => {
         if (!input.trim()) return;
@@ -134,15 +131,13 @@ const AIChatGenerator: React.FC<{ disableCustomTheme?: boolean }> = (props) => {
                                     sx={{ fontSize: 80, color: "warning.main" }}
                                 />
                                 <Typography variant="h5" fontWeight="bold">
-                                    Essai gratuit épuisé
+                                    {t("ai.free_trial_exhausted")}
                                 </Typography>
                                 <Typography
                                     variant="body1"
                                     color="text.secondary"
                                 >
-                                    Vous avez utilisé votre essai gratuit de
-                                    l'IA. Passez à Premium pour continuer à
-                                    générer des projets avec l'IA.
+                                    {t("ai.trial_used_message")}
                                 </Typography>
                                 <Button
                                     variant="contained"
@@ -151,7 +146,7 @@ const AIChatGenerator: React.FC<{ disableCustomTheme?: boolean }> = (props) => {
                                     onClick={() => navigate("/premium")}
                                     size="large"
                                 >
-                                    Passer à Premium
+                                    {t("ai.upgrade_to_premium")}
                                 </Button>
                             </Stack>
                         </CardContent>

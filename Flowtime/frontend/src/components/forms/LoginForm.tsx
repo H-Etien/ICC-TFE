@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import {
     Box,
     Button,
@@ -19,6 +20,7 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
 type Props = { route: string; method: string };
 
 function LoginForm({ route, method }: Props): JSX.Element {
+    const { t } = useTranslation();
     const [passwordError, setPasswordError] = useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
     const [nameError, setNameError] = useState(false);
@@ -66,7 +68,7 @@ function LoginForm({ route, method }: Props): JSX.Element {
         } catch (error: any) {
             // Si erreur d'identifiant ou mot de passe
             setPasswordError(true);
-            setPasswordErrorMessage("Identifiant ou mot de passe incorrect");
+            setPasswordErrorMessage(t("auth.invalid_credentials"));
         }
     };
     return (
@@ -82,21 +84,21 @@ function LoginForm({ route, method }: Props): JSX.Element {
             }}
         >
             <FormControl>
-                <FormLabel htmlFor="username">Identifiant</FormLabel>
+                <FormLabel htmlFor="username">{t("auth.username")}</FormLabel>
                 <TextField
                     autoComplete="username"
                     name="username"
                     required
                     fullWidth
                     id="username"
-                    placeholder="Jonh123"
+                    placeholder="John123"
                     error={nameError}
                     helperText={nameErrorMessage}
                     color={nameError ? "error" : "primary"}
                 />
             </FormControl>
             <FormControl>
-                <FormLabel htmlFor="password">Password</FormLabel>
+                <FormLabel htmlFor="password">{t("auth.password")}</FormLabel>
                 <TextField
                     error={passwordError}
                     helperText={passwordErrorMessage}
@@ -114,11 +116,11 @@ function LoginForm({ route, method }: Props): JSX.Element {
             </FormControl>
             <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
+                label={t("auth.remember_me")}
             />
 
             <Button type="submit" fullWidth variant="contained">
-                Connexion
+                {t("auth.login_button")}
             </Button>
             {/* <ForgotPassword open={open} handleClose={handleClose} />
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
     Box,
     Button,
@@ -18,6 +19,7 @@ import PageLayout from "../components/layout/PageLayout";
 import Header from "../components/layout/Header";
 
 export default function Premium(props: { disableCustomTheme?: boolean }) {
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [isPremium, setIsPremium] = useState(false);
     const [expiresAt, setExpiresAt] = useState<string | null>(null);
@@ -93,19 +95,20 @@ export default function Premium(props: { disableCustomTheme?: boolean }) {
                                     sx={{ fontSize: 80, color: "success.main" }}
                                 />
                                 <Typography variant="h5" fontWeight="bold">
-                                    Vous êtes Premium!
+                                    {t("premium.you_are_premium")}
                                 </Typography>
                                 <Typography
                                     variant="body1"
                                     color="text.secondary"
                                     textAlign="center"
                                 >
-                                    Profitez de toutes les fonctionnalités
-                                    illimitées de Flowtime.
+                                    {t("premium.enjoy_features")}
                                 </Typography>
                                 {expiresAt && (
                                     <Chip
-                                        label={`Expire le ${new Date(
+                                        label={`${t(
+                                            "premium.expires_on"
+                                        )} ${new Date(
                                             expiresAt
                                         ).toLocaleDateString("fr-FR")}`}
                                         color="primary"
@@ -120,18 +123,17 @@ export default function Premium(props: { disableCustomTheme?: boolean }) {
                                         variant="subtitle2"
                                         fontWeight="bold"
                                     >
-                                        Avantages Premium actifs :
+                                        {t("premium.active_benefits")}
                                     </Typography>
                                     <Typography variant="body2">
-                                        ✅ Accès illimité à l'IA de génération
-                                        de projets
+                                        {t("premium.unlimited_ai")}
                                     </Typography>
 
                                     <Typography variant="body2">
-                                        ✅ Projets illimités
+                                        {t("premium.unlimited_projects")}
                                     </Typography>
                                     <Typography variant="body2">
-                                        ✅ Export avancé des données
+                                        {t("premium.advanced_export")}
                                     </Typography>
                                 </Stack>
                             </Stack>
@@ -153,14 +155,14 @@ export default function Premium(props: { disableCustomTheme?: boolean }) {
                                         fontWeight="bold"
                                         sx={{ mt: 2 }}
                                     >
-                                        Passez à Premium
+                                        {t("premium.upgrade_to_premium")}
                                     </Typography>
                                     <Typography
                                         variant="h5"
                                         color="primary"
                                         sx={{ mt: 1 }}
                                     >
-                                        9.99€ / an
+                                        {t("premium.price")}
                                     </Typography>
                                 </Box>
 
@@ -171,20 +173,10 @@ export default function Premium(props: { disableCustomTheme?: boolean }) {
                                         variant="subtitle1"
                                         fontWeight="bold"
                                     >
-                                        Fonctionnalités Premium :
+                                        {t("premium.features")}
                                     </Typography>
                                     <Typography variant="body1">
-                                        ✅ Accès illimité à l'IA de génération
-                                        de projets
-                                    </Typography>
-                                    <Typography variant="body1">
-                                        ✅ Support prioritaire
-                                    </Typography>
-                                    <Typography variant="body1">
-                                        ✅ Projets illimités
-                                    </Typography>
-                                    <Typography variant="body1">
-                                        ✅ Export avancé des données
+                                        {t("premium.unlimited_ai")}
                                     </Typography>
                                 </Stack>
 
@@ -203,8 +195,8 @@ export default function Premium(props: { disableCustomTheme?: boolean }) {
                                     }
                                 >
                                     {loading
-                                        ? "Redirection..."
-                                        : "Passer à Premium"}
+                                        ? t("premium.redirecting")
+                                        : t("premium.upgrade_to_premium")}
                                 </Button>
 
                                 <Typography
@@ -212,7 +204,7 @@ export default function Premium(props: { disableCustomTheme?: boolean }) {
                                     color="text.secondary"
                                     textAlign="center"
                                 >
-                                    Paiement sécurisé par Stripe
+                                    {t("premium.secure_payment")}
                                 </Typography>
                             </Stack>
                         </CardContent>
