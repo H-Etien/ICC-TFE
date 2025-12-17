@@ -18,6 +18,8 @@ import Calendar from "./pages/Calendar";
 import AIChatGenerator from "./pages/AIChatGenerator";
 import About from "./pages/About";
 import Settings from "./pages/Settings";
+import Premium from "./pages/Premium";
+import PremiumSuccess from "./pages/PremiumSuccess";
 import GDPRBanner from "./components/ui/GDPRBanner";
 
 function Logout() {
@@ -103,6 +105,22 @@ function App() {
                         element={
                             <ProtectedRoute>
                                 <Settings />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/premium"
+                        element={
+                            <ProtectedRoute>
+                                <Premium />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/premium/success"
+                        element={
+                            <ProtectedRoute>
+                                <PremiumSuccess />
                             </ProtectedRoute>
                         }
                     />

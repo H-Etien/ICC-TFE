@@ -12,6 +12,15 @@ class AIChatView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        user = request.user
+        
+        # Vérifier si l'utilisateur peut utiliser l'IA
+        if not user.profile.can_use_ai():
+            return Response(
+                {"error": "Vous avez utilisé votre essai gratuit. Veuillez passer premium pour continuer."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
         user_message = request.data.get("messages")
 
         if not user_message:
@@ -22,6 +31,12 @@ class AIChatView(APIView):
 
         try:
             ai_response = get_ai_chat_response(user_message)
+            
+            # Marquer l'essai comme utilisé si ce n'est pas un premium
+            if not user.profile.is_premium:
+                user.profile.trial_ai_used = True
+                user.profile.save()
+            
             return Response({"response": ai_response}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -31,6 +46,15 @@ class AIProjectGeneratorView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        user = request.user
+        
+        # Vérifier si l'utilisateur peut utiliser l'IA
+        if not user.profile.can_use_ai():
+            return Response(
+                {"error": "Vous avez utilisé votre essai gratuit. Veuillez passer premium pour continuer."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
         prompt = request.data.get("messages")
 
         # L'utilisateur doit faire un prompt
@@ -47,7 +71,12 @@ class AIProjectGeneratorView(APIView):
                 
                 project_title = generated_data.get("project_title") 
                 project_description = generated_data.get("project_description", "Projet généré par IA.")
-                generated_tasks = generated_data.get("tasks") 
+                generated_tasks = generated_data.get("tasks")
+                
+                # Marquer l'essai IA comme utilisé si ce n'est pas un premium
+                if not user.profile.is_premium:
+                    user.profile.trial_ai_used = True
+                    user.profile.save() 
 
                 if not project_title or not generated_tasks:
                     raise Exception("L'IA n'a pas pu générer un titre ou des tâches.")

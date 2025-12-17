@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from .views import UserCreateView, UserDetailView, UserSearchView, TaskListCreateView, ProjectListCreateView, ProjectDetailView, TaskDetailView, UserAllTasksListView, AIProjectGeneratorView, AIChatView, TaskExportProjectView
+from .views import UserCreateView, UserDetailView, UserSearchView, TaskListCreateView, ProjectListCreateView, ProjectDetailView, TaskDetailView, UserAllTasksListView, AIProjectGeneratorView, AIChatView, TaskExportProjectView, CreateCheckoutSessionView, stripe_webhook, CheckPremiumStatusView, UserTrialStatusView, ActivatePremiumView
 
 
 
@@ -30,4 +30,12 @@ urlpatterns = [
     # IA    
     path('ai/chat/', AIChatView.as_view(), name='ai_chat'),
     path('ai/generate_project/', AIProjectGeneratorView.as_view(), name='ai_generate_project'),
+    
+    # Stripe
+    path('stripe/create-checkout-session/', CreateCheckoutSessionView.as_view(), name='create_checkout_session'),
+    path('stripe/webhook/', stripe_webhook, name='stripe_webhook'),
+    path('stripe/premium-status/', CheckPremiumStatusView.as_view(), name='premium_status'),
+    path('stripe/trial-status/', UserTrialStatusView.as_view(), name='trial_status'),
+    path('stripe/activate-premium/', ActivatePremiumView.as_view(), name='activate_premium'),
 ]
+

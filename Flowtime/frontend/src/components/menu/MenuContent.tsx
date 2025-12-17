@@ -14,6 +14,7 @@ import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
 import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 import LogoutIcon from "@mui/icons-material/Logout";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import StarIcon from "@mui/icons-material/Star";
 
 import React from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
@@ -39,6 +40,11 @@ export default function MenuContent() {
             text: t("navigation.ai_generator"),
             icon: <AssignmentRoundedIcon />,
             to: "/ai-generator",
+        },
+        {
+            text: "Premium",
+            icon: <StarIcon />,
+            to: "/premium",
         },
     ];
 

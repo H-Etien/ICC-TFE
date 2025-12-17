@@ -1,9 +1,11 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from django.utils import timezone
-from api.models import Project, Task
+from api.models import Project, Task, UserProfile, Invoice
 from datetime import timedelta
 import random
+from faker import Faker
+from decimal import Decimal
 
 
 class Command(BaseCommand):
@@ -26,7 +28,10 @@ class Command(BaseCommand):
     def handle(self,**options):
         # Récupérer le nombre d'objets à créer
         num_users = options['users']
-        num_projects = options['projects']
+        # num_projects = options['projects']
+        num_projects = 2 * num_users
+        
+        fake = Faker('fr_FR')  # Utiliser la locale française
 
         self.stdout.write(self.style.SUCCESS('🚀 Création de données de test...'))
 
@@ -35,16 +40,18 @@ class Command(BaseCommand):
         self.stdout.write(f'👥 Création de {num_users} utilisateurs...')
         users = []
         for i in range(num_users):
-            username = f"test-user{i+1}"
-            email = f"test-user{i+1}@example.com"
+            username = f".{fake.user_name()}"
+            email = fake.email()
+            first_name = fake.first_name()
+            last_name = fake.last_name()
             
             # Vérifier si l'utilisateur existe déjà
             user, created = User.objects.get_or_create(
                 username=username,
                 defaults={
                     'email': email,
-                    'first_name': f'Test-{i+1}',
-                    'last_name': 'Babouin'
+                    'first_name': first_name,
+                    'last_name': last_name
                 }
             )
             
@@ -54,6 +61,31 @@ class Command(BaseCommand):
                 users.append(user)
             else:
                 users.append(user)
+            
+            # Créer ou récupérer le profil utilisateur
+            profile, _ = UserProfile.objects.get_or_create(user=user)
+            
+            # Aléatoirement : 30% de chance d'être premium
+            if random.random() < 0.3:
+                profile.is_premium = True
+                profile.premium_expires_at = timezone.now() + timedelta(days=30)
+                profile.stripe_customer_id = f"cus_{fake.bothify('################')}"
+                profile.save()
+                
+                # Créer une facture pour cet utilisateur premium
+                Invoice.objects.create(
+                    user=user,
+                    amount=Decimal('9.99'),
+                    paid_at=timezone.now() - timedelta(days=random.randint(1, 25)),
+                    premium_expires_at=profile.premium_expires_at,
+                    description="Premium Flowtime - 1 mois"
+                )
+            # 40% de chance d'avoir utilisé le free trial
+            elif random.random() < 0.4:
+                profile.trial_ai_used = True
+                profile.save()
+            else:
+                profile.save()
 
         self.stdout.write(self.style.SUCCESS(f'✅ {len(users)} utilisateurs créés/existants'))
 
@@ -84,7 +116,7 @@ class Command(BaseCommand):
             project_title = random.choice(project_titles)
 
             owner = random.choice(users)
-            title = f"test - {project_title} - {i+1}"
+            title = f".{project_title} - {i+1}"
             
             project = Project.objects.create(
                 title=title,
@@ -126,7 +158,7 @@ class Command(BaseCommand):
             
             for task_idx in range(num_tasks_for_project):
                 title = random.choice(task_titles)
-                task_title = f"test - {title} - {task_idx+1}"
+                task_title = f".{title} - {task_idx+1}"
                 status_choice = random.choice(status)
                 
                 start_time = timezone.now() + timedelta(days=random.randint(-30, 30))
@@ -148,9 +180,12 @@ class Command(BaseCommand):
         # RÉSUMÉ
         self.stdout.write(self.style.SUCCESS(''))
         self.stdout.write(self.style.SUCCESS(' RÉSUMÉ:'))
-        self.stdout.write(self.style.SUCCESS(f'   👥 Users: {User.objects.count()}'))
-        self.stdout.write(self.style.SUCCESS(f'   📁 Projects: {Project.objects.count()}'))
-        self.stdout.write(self.style.SUCCESS(f'   📝 Tasks: {Task.objects.count()}'))
+        self.stdout.write(self.style.SUCCESS(f'   👥 utilisateurs: {User.objects.count()}'))
+        self.stdout.write(self.style.SUCCESS(f'   � utilisateurs premium: {UserProfile.objects.filter(is_premium=True).count()}'))
+        self.stdout.write(self.style.SUCCESS(f'   🎁 utilisateurs avec essai utilisé: {UserProfile.objects.filter(trial_ai_used=True).count()}'))
+        self.stdout.write(self.style.SUCCESS(f'   📁 projets: {Project.objects.count()}'))
+        self.stdout.write(self.style.SUCCESS(f'   📝 tâches: {Task.objects.count()}'))
+        self.stdout.write(self.style.SUCCESS(f'   💳 factures: {Invoice.objects.count()}'))
         self.stdout.write(self.style.SUCCESS(''))
         self.stdout.write(self.style.SUCCESS(' Données de test créées avec succès !!!'))
 

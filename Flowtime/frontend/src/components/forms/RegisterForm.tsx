@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { JSX } from "react";
 
 import api from "../../api";
@@ -18,6 +19,7 @@ import {
 type Props = { route: string; method: string };
 
 function RegisterForm({ route, method }: Props): JSX.Element {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     const [emailError, setEmailError] = useState(false);
@@ -41,7 +43,7 @@ function RegisterForm({ route, method }: Props): JSX.Element {
 
         if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
             setEmailError(true);
-            setEmailErrorMessage("Please enter a valid email address.");
+            setEmailErrorMessage(t("auth.invalid_email"));
             isValid = false;
         } else {
             setEmailError(false);
@@ -50,9 +52,7 @@ function RegisterForm({ route, method }: Props): JSX.Element {
 
         if (!password.value || password.value.length < 6) {
             setPasswordError(true);
-            setPasswordErrorMessage(
-                "Password must be at least 6 characters long."
-            );
+            setPasswordErrorMessage(t("auth.password_too_short"));
             isValid = false;
         } else {
             setPasswordError(false);
@@ -61,7 +61,7 @@ function RegisterForm({ route, method }: Props): JSX.Element {
 
         if (!username.value || username.value.length < 1) {
             setNameError(true);
-            setNameErrorMessage("Username is required.");
+            setNameErrorMessage(t("auth.username_required"));
             isValid = false;
         } else {
             setNameError(false);
@@ -137,21 +137,23 @@ function RegisterForm({ route, method }: Props): JSX.Element {
                 }}
             >
                 <FormControl>
-                    <FormLabel htmlFor="username">Identifiant</FormLabel>
+                    <FormLabel htmlFor="username">
+                        {t("auth.username")}
+                    </FormLabel>
                     <TextField
                         autoComplete="username"
                         name="username"
                         required
                         fullWidth
                         id="username"
-                        placeholder="Jonh123"
+                        placeholder="John123"
                         error={nameError}
                         helperText={nameErrorMessage}
                         color={nameError ? "error" : "primary"}
                     />
                 </FormControl>
                 <FormControl>
-                    <FormLabel htmlFor="email">Email</FormLabel>
+                    <FormLabel htmlFor="email">{t("auth.email")}</FormLabel>
                     <TextField
                         required
                         fullWidth
@@ -166,7 +168,9 @@ function RegisterForm({ route, method }: Props): JSX.Element {
                     />
                 </FormControl>
                 <FormControl>
-                    <FormLabel htmlFor="password">Password</FormLabel>
+                    <FormLabel htmlFor="password">
+                        {t("auth.password")}
+                    </FormLabel>
                     <TextField
                         required
                         fullWidth
@@ -185,7 +189,7 @@ function RegisterForm({ route, method }: Props): JSX.Element {
                     control={
                         <Checkbox value="allowExtraEmails" color="primary" />
                     }
-                    label="I want to receive updates via email."
+                    label={t("auth.receive_updates")}
                 />
                 <Button
                     type="submit"
@@ -193,7 +197,7 @@ function RegisterForm({ route, method }: Props): JSX.Element {
                     variant="contained"
                     onClick={validateInputs}
                 >
-                    Sign up
+                    {t("auth.sign_up_button")}
                 </Button>
             </Box>
             ;

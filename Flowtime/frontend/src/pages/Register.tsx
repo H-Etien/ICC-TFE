@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
@@ -66,6 +67,7 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignUp(props: { disableCustomTheme?: boolean }) {
+    const { t } = useTranslation();
     return (
         <AppTheme {...props}>
             <CssBaseline enableColorScheme />
@@ -83,7 +85,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
                             fontSize: "clamp(2rem, 10vw, 2.15rem)",
                         }}
                     >
-                        Inscription
+                        {t("auth.sign_up_title")}
                     </Typography>
 
                     <RegisterForm
@@ -93,7 +95,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
 
                     <Divider>
                         <Typography sx={{ color: "text.secondary" }}>
-                            or
+                            {t("auth.or")}
                         </Typography>
                     </Divider>
                     <Box
@@ -109,7 +111,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
                             onClick={() => alert("Sign up with Google")}
                             startIcon={<GoogleIcon />}
                         >
-                            Sign up with Google
+                            {t("auth.sign_up_google")}
                         </Button>
                         <Button
                             fullWidth
@@ -117,11 +119,11 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
                             onClick={() => alert("Sign up with Facebook")}
                             startIcon={<FacebookIcon />}
                         >
-                            Sign up with Facebook
+                            {t("auth.sign_up_facebook")}
                         </Button>
                         <Typography sx={{ textAlign: "center" }}>
-                            Already have an account?{" "}
-                            <Link href="/login">Sign in</Link>
+                            {t("auth.already_have_account")}{" "}
+                            <Link href="/login">{t("auth.sign_in")}</Link>
                         </Typography>
                     </Box>
                 </Card>

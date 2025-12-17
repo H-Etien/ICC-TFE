@@ -1,5 +1,6 @@
 import { use, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import Header from "../components/layout/Header";
 import ProjectGrid from "../components/layout/ProjectGrid";
@@ -48,6 +49,7 @@ const xThemeComponents = {
 
 export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
     const { id } = useParams<{ id: string }>();
+    const { t } = useTranslation();
     const { getProjectById, selectedProject } = useProjects();
     const { getTasks, tasks, setTasks, createTask } = useTasks();
     const navigate = useNavigate();
@@ -206,7 +208,7 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
                             width="100%"
                         >
                             <Typography variant="h5" component="h2">
-                                Titre
+                                {t("project.title_label")}
                             </Typography>
                             <TextField
                                 name="title"
@@ -216,7 +218,7 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
                             />
 
                             <Typography variant="h6" component="h3">
-                                Description
+                                {t("project.description_label")}
                             </Typography>
 
                             <TextareaAutosize
@@ -236,18 +238,19 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
                                     fontSize: "0.875rem",
                                 }}
                             />
+
                             <Box display="flex" gap={2}>
                                 <Button
                                     variant="outlined"
                                     onClick={() => setIsEditing(false)}
                                 >
-                                    Annuler
+                                    {t("common.cancel")}
                                 </Button>
                                 <Button
                                     variant="contained"
                                     onClick={handleSave}
                                 >
-                                    Enregistrer
+                                    {t("common.save")}
                                 </Button>
                             </Box>
                         </Box>
@@ -285,7 +288,7 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
                                     variant="contained"
                                     onClick={() => setIsEditing(true)}
                                 >
-                                    Modifier le projet
+                                    {t("project.edit_project")}
                                 </Button>
                             </div>
 
@@ -302,7 +305,7 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
                                     startIcon={<DownloadIcon />}
                                     onClick={handleExportToCalendar}
                                 >
-                                    Exporter en .ics pour Google Calendar
+                                    {t("project.export_calendar")}
                                 </Button>
                             </div>
                         </div>
@@ -320,17 +323,19 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
 
             {/* Dialogue de confirmation pour supprimer un projet */}
             <Dialog open={confirmOpen} onClose={closeConfirmDialog}>
-                <DialogTitle>Supprimer le projet ?</DialogTitle>
+                <DialogTitle>{t("project.confirm_delete_project")}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         {selectedProject
-                            ? `Voulez-vous vraiment supprimer le projet "${selectedProject.title}" ? Cette action est irréversible et supprimera aussi toutes les tâches associées.`
+                            ? `${t("project.confirm_delete_project")} "${
+                                  selectedProject.title
+                              }"`
                             : ""}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={closeConfirmDialog} disabled={isDeleting}>
-                        Annuler
+                        {t("common.cancel")}
                     </Button>
                     <Button
                         color="error"
@@ -338,7 +343,9 @@ export default function ProjectDetail(props: { disableCustomTheme?: boolean }) {
                         disabled={isDeleting}
                         autoFocus
                     >
-                        {isDeleting ? "Suppression..." : "Supprimer"}
+                        {isDeleting
+                            ? t("project.deleting")
+                            : t("project.delete_confirm")}
                     </Button>
                 </DialogActions>
             </Dialog>

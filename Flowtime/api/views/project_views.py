@@ -1,6 +1,9 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
 from django.contrib.auth.models import User
 from ..models import Project
 from ..serializers import ProjectSerializer
@@ -25,8 +28,16 @@ class ProjectListCreateView(generics.ListCreateAPIView):
         return Project.objects.filter(members=user) | Project.objects.filter(owner=user)
 
     def perform_create(self, serializer):
-        project = serializer.save(owner=self.request.user)
-        project.members.add(self.request.user)  # Ajouter le créateur comme membre du projet
+        user = request.user
+        
+        # Vérifier si l'utilisateur peut créer un projet
+        if not user.profile.can_create_project():
+            raise PermissionDenied(
+                "Vous ne pouvez pas créer de projets."
+            )
+        
+        project = serializer.save(owner=user)
+        project.members.add(user)  # Ajouter le créateur comme membre du projet
         
         # Ajouter les autres membres si fournis
         members_ids = self.request.data.get('members', [])
@@ -73,3 +84,68 @@ class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
             raise PermissionDenied("Seul le propriétaire peut supprimer ce projet.")
         # Sinon suppression normale (cascade sur Task si FK on_delete=CASCADE)
         instance.delete()
+    
+    # Action pour ajouter un membre au projet
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    def add_member(self, request, pk=None):
+        project = self.get_object()
+        
+        # Seul le propriétaire peut ajouter des membres
+        if project.owner != request.user:
+            raise PermissionDenied("Seul le propriétaire peut ajouter des membres.")
+        
+        email = request.data.get('email')
+        if not email:
+            return Response(
+                {'error': 'Email is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            user = User.objects.get(email=email)
+            project.members.add(user)
+            return Response(
+                {'message': f'{email} a été ajouté au projet.'},
+                status=status.HTTP_200_OK
+            )
+        except User.DoesNotExist:
+            return Response(
+                {'error': f'User with email {email} not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+    
+    # Action pour supprimer un membre du projet
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    def remove_member(self, request, pk=None):
+        project = self.get_object()
+        
+        # Seul le propriétaire peut supprimer des membres
+        if project.owner != request.user:
+            raise PermissionDenied("Seul le propriétaire peut supprimer des membres.")
+        
+        member_id = request.data.get('member_id')
+        if not member_id:
+            return Response(
+                {'error': 'member_id is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Ne pas pouvoir supprimer le propriétaire
+        if int(member_id) == project.owner.id:
+            return Response(
+                {'error': 'Impossible de supprimer le propriétaire du projet'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            member = User.objects.get(id=member_id)
+            project.members.remove(member)
+            return Response(
+                {'message': f'{member.email} a été retiré du projet.'},
+                status=status.HTTP_200_OK
+            )
+        except User.DoesNotExist:
+            return Response(
+                {'error': f'User with id {member_id} not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )

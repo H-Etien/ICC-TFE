@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
     Box,
     Container,
@@ -25,6 +26,7 @@ import api from "../api";
 import { useNavigate } from "react-router-dom";
 
 export default function Settings(props: { disableCustomTheme?: boolean }) {
+    const { t } = useTranslation();
     const { user, getCurrentUser } = useUser();
     const navigate = useNavigate();
 
@@ -50,12 +52,15 @@ export default function Settings(props: { disableCustomTheme?: boolean }) {
     // Sauvegarder les modifications
     const handleSaveChanges = async () => {
         if (!username.trim() || !email.trim()) {
-            setMessage({ type: "error", text: "Tous les champs sont requis." });
+            setMessage({
+                type: "error",
+                text: t("settings.all_fields_required"),
+            });
             return;
         }
 
         if (!/\S+@\S+\.\S+/.test(email)) {
-            setMessage({ type: "error", text: "Email invalide." });
+            setMessage({ type: "error", text: t("settings.invalid_email") });
             return;
         }
 
@@ -69,7 +74,7 @@ export default function Settings(props: { disableCustomTheme?: boolean }) {
             });
             setMessage({
                 type: "success",
-                text: "Modifications sauvegardées avec succès!",
+                text: t("settings.changes_saved"),
             });
 
             // Rafraîchir les données utilisateur
@@ -80,7 +85,7 @@ export default function Settings(props: { disableCustomTheme?: boolean }) {
             const errorMsg =
                 error.response?.data?.username?.[0] ||
                 error.response?.data?.email?.[0] ||
-                "Erreur lors de la mise à jour.";
+                t("settings.update_error");
             setMessage({ type: "error", text: errorMsg });
         } finally {
             setLoading(false);
@@ -95,7 +100,7 @@ export default function Settings(props: { disableCustomTheme?: boolean }) {
             await api.delete("/api/user/me/");
             setMessage({
                 type: "success",
-                text: "Compte supprimé. Redirection...",
+                text: t("settings.account_deleted"),
             });
 
             // Effacer les tokens et rediriger
@@ -106,7 +111,7 @@ export default function Settings(props: { disableCustomTheme?: boolean }) {
         } catch (error: any) {
             setMessage({
                 type: "error",
-                text: "Erreur lors de la suppression du compte.",
+                text: t("settings.delete_error"),
             });
         } finally {
             setDeleteLoading(false);
@@ -117,7 +122,7 @@ export default function Settings(props: { disableCustomTheme?: boolean }) {
     if (!user) {
         return (
             <PageLayout {...props}>
-                <Header pageTitle="Settings" />
+                <Header pageTitle={t("settings.title")} />
                 <Box
                     sx={{
                         display: "flex",
@@ -134,7 +139,7 @@ export default function Settings(props: { disableCustomTheme?: boolean }) {
 
     return (
         <PageLayout {...props}>
-            <Header pageTitle="Paramètres" />
+            <Header pageTitle={t("settings.title")} />
             <Divider sx={{ my: 2 }} />
 
             <Container maxWidth="sm">
@@ -156,7 +161,7 @@ export default function Settings(props: { disableCustomTheme?: boolean }) {
                                 variant="h6"
                                 sx={{ mb: 2, fontWeight: 600 }}
                             >
-                                Modifier votre profil
+                                {t("settings.edit_profile")}
                             </Typography>
 
                             <Stack spacing={2}>
@@ -164,7 +169,7 @@ export default function Settings(props: { disableCustomTheme?: boolean }) {
                                     variant="body2"
                                     color="textSecondary"
                                 >
-                                    Nom d'utilisateur
+                                    {t("settings.username")}
                                 </Typography>
                                 <TextField
                                     fullWidth
@@ -172,7 +177,7 @@ export default function Settings(props: { disableCustomTheme?: boolean }) {
                                     onChange={(e) =>
                                         setUsername(e.target.value)
                                     }
-                                    placeholder="Votre identifiant"
+                                    placeholder={t("settings.your_username")}
                                     variant="outlined"
                                     disabled={loading}
                                 />
@@ -181,14 +186,14 @@ export default function Settings(props: { disableCustomTheme?: boolean }) {
                                     variant="body2"
                                     color="textSecondary"
                                 >
-                                    Adresse email
+                                    {t("settings.email")}
                                 </Typography>
                                 <TextField
                                     fullWidth
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="votre@email.com"
+                                    placeholder="your@email.com"
                                     variant="outlined"
                                     disabled={loading}
                                 />
@@ -208,8 +213,8 @@ export default function Settings(props: { disableCustomTheme?: boolean }) {
                                     fullWidth
                                 >
                                     {loading
-                                        ? "Sauvegarde..."
-                                        : "Sauvegarder les modifications"}
+                                        ? t("settings.saving")
+                                        : t("settings.save_changes")}
                                 </Button>
                             </Stack>
                         </CardContent>
@@ -228,15 +233,14 @@ export default function Settings(props: { disableCustomTheme?: boolean }) {
                                     color: "error.main",
                                 }}
                             >
-                                Supprimer votre compte
+                                {t("settings.delete_account")}
                             </Typography>
 
                             <Typography
                                 variant="body2"
                                 sx={{ mb: 2, color: "text.secondary" }}
                             >
-                                Attention! La suppression de votre compte est
-                                définitive et irréversible !!!
+                                {t("settings.delete_warning")}
                             </Typography>
 
                             <Button
@@ -247,7 +251,7 @@ export default function Settings(props: { disableCustomTheme?: boolean }) {
                                 startIcon={<DeleteIcon />}
                                 fullWidth
                             >
-                                Supprimer mon compte
+                                {t("settings.delete_my_account")}
                             </Button>
                         </CardContent>
                     </Card>
@@ -260,12 +264,11 @@ export default function Settings(props: { disableCustomTheme?: boolean }) {
                 onClose={() => setOpenDeleteDialog(false)}
             >
                 <DialogTitle sx={{ color: "error.main", fontWeight: 600 }}>
-                    Êtes-vous sûr?
+                    {t("settings.are_you_sure")}
                 </DialogTitle>
                 <DialogContent>
                     <Typography sx={{ mt: 2 }}>
-                        Cette action est définitive et irréversible. Vous
-                        perdrez accès à tous vos projets et tâches.
+                        {t("settings.delete_permanent_warning")}
                     </Typography>
                 </DialogContent>
                 <DialogActions>
@@ -273,7 +276,7 @@ export default function Settings(props: { disableCustomTheme?: boolean }) {
                         onClick={() => setOpenDeleteDialog(false)}
                         disabled={deleteLoading}
                     >
-                        Annuler
+                        {t("settings.cancel")}
                     </Button>
                     <Button
                         onClick={handleDeleteAccount}
@@ -287,8 +290,8 @@ export default function Settings(props: { disableCustomTheme?: boolean }) {
                         }
                     >
                         {deleteLoading
-                            ? "Suppression..."
-                            : "Supprimer définitivement"}
+                            ? t("settings.deleting")
+                            : t("settings.delete_permanently")}
                     </Button>
                 </DialogActions>
             </Dialog>
