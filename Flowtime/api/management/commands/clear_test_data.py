@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from api.models import Project, Task
+from api.models import Project, Task, Invoice
 
 
 class Command(BaseCommand):
@@ -10,18 +10,21 @@ class Command(BaseCommand):
         self.stdout.write(self.style.WARNING(' Suppression des données de test...'))
         
         # Prends que les données de test
-        projects_to_delete = Project.objects.filter(title__startswith='test')
-        tasks_to_delete = Task.objects.filter(title__startswith='test')
-        users_to_delete = User.objects.filter(username__startswith='test-user')
+        projects_to_delete = Project.objects.filter(title__startswith='.')
+        tasks_to_delete = Task.objects.filter(title__startswith='.')
+        users_to_delete = User.objects.filter(username__startswith='.')
+        invoices_to_delete = Invoice.objects.filter(user__username__startswith='.')
 
         # Compte avant suppression
         projects_count = projects_to_delete.count()
         tasks_count = tasks_to_delete.count()
         users_count = users_to_delete.count()
+        invoices_count = invoices_to_delete.count()
         
         # Supprime que les données de test
         tasks_to_delete.delete()
         projects_to_delete.delete()
+        invoices_to_delete.delete()
         users_to_delete.delete()
 
         self.stdout.write(self.style.SUCCESS(''))
@@ -29,5 +32,6 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(f'   👥 {users_count} utilisateurs'))
         self.stdout.write(self.style.SUCCESS(f'   📁 {projects_count} projets'))
         self.stdout.write(self.style.SUCCESS(f'   📝 {tasks_count} tâches'))
+        self.stdout.write(self.style.SUCCESS(f'   💳 {invoices_count} factures'))
         self.stdout.write(self.style.SUCCESS(''))
         self.stdout.write(self.style.SUCCESS(' Données de test supprimées!'))
